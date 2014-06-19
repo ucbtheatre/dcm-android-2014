@@ -11,13 +11,13 @@
         android:id="@+id/listview_venue_show_time"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="18sp"
         tools:text="12:30 PM"/>
     <TextView
         android:id="@+id/listview_venue_show_title"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="18sp"
         tools:text="ASSSSCAT 3000"/>
 </LinearLayout>
