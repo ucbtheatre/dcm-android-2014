@@ -10,6 +10,19 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    signingConfigs {
+        debug {
+        }
+
+        release {
+            storeFile file("MaryKay.jks")
+            storePassword "DxcU7MuU2QCJyk"
+            keyAlias "MK"
+            keyPassword "DxcU7MuU2QCJyk"
+        }
+    }
+
     buildTypes {
         release {
             runProguard false
