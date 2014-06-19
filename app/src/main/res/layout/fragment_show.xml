@@ -1,0 +1,53 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="15dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="15dp"
+        tools:context="com.ucbtheatre.dcm.app.fragment.ShowFragment">
+
+        <TextView
+            android:id="@+id/fragment_show_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="28sp"
+            android:paddingBottom="10dp"
+            android:text="@string/fragment_show_blank_title" />
+
+        <com.ucbtheatre.dcm.app.widget.RemoteImageView
+            android:id="@+id/fragment_show_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            android:paddingBottom="10dp"
+            android:adjustViewBounds="true"/>
+
+        <TextView
+            android:id="@+id/fragment_show_blurb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:paddingBottom="10dp"
+            />
+        <LinearLayout
+            android:id="@+id/fragment_show_times"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="10dp"/>
+        <LinearLayout
+            android:id="@+id/fragment_show_cast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+    </LinearLayout>
+</ScrollView>
+

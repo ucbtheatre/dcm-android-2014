@@ -18,7 +18,7 @@ import java.sql.SQLException;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = "dcm.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 16;
 
     //Static accessor
     private static DatabaseHelper mSharedService;
@@ -35,6 +35,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     //Data accessor objects
     private Dao<Venue, Integer> venueDAO;
+    private Dao<Show, Integer> showDAO;
+    private Dao<Performance, Integer> performanceDAO;
 
 
     //Constructor and creation
@@ -47,6 +49,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         try {
             Log.i(DatabaseHelper.class.getName(), "onCreate");
             TableUtils.createTable(connectionSource, Venue.class);
+            TableUtils.createTable(connectionSource, Show.class);
+            TableUtils.createTable(connectionSource, Performance.class);
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
@@ -55,23 +59,54 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int i, int i2) {
+        clearDatabase();
+    }
+
+    public void clearDatabase(){
         try {
             Log.i(DatabaseHelper.class.getName(), "onUpgrade");
             TableUtils.dropTable(connectionSource, Venue.class, true);
+            TableUtils.dropTable(connectionSource, Show.class, true);
+            TableUtils.dropTable(connectionSource, Performance.class, true);
 
             // after we drop the old databases, we create the new ones
-            onCreate(db, connectionSource);
+            onCreate(null, connectionSource);
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't drop databases", e);
             throw new RuntimeException(e);
         }
     }
 
-    public Dao<Venue, Integer> getVenueDAO() throws SQLException {
+    public Dao<Venue, Integer> getVenueDAO(){
         if (venueDAO == null) {
-            venueDAO = getDao(Venue.class);
+            try {
+                venueDAO = getDao(Venue.class);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return venueDAO;
+    }
+    public Dao<Show, Integer> getShowDAO() {
+        if (showDAO == null) {
+            try {
+                showDAO = getDao(Show.class);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return showDAO;
+    }
+
+    public Dao<Performance, Integer> getPerformanceDAO() {
+        if (performanceDAO == null) {
+            try {
+                performanceDAO = getDao(Performance.class);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return performanceDAO;
     }
 
     @Override

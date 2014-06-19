@@ -2,15 +2,15 @@ package com.ucbtheatre.dcm.app.activity;
 
 import java.util.Locale;
 
-import android.app.Activity;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,10 +18,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.ucbtheatre.dcm.app.R;
 import com.ucbtheatre.dcm.app.data.DataService;
 import com.ucbtheatre.dcm.app.data.DatabaseHelper;
-import com.ucbtheatre.dcm.app.fragment.VenueFragment;
+import com.ucbtheatre.dcm.app.data.Show;
+import com.ucbtheatre.dcm.app.fragment.NavigationFragment;
+import com.ucbtheatre.dcm.app.fragment.ShowFragment;
+import com.ucbtheatre.dcm.app.fragment.ShowsListFragment;
+import com.ucbtheatre.dcm.app.fragment.VenuesListFragment;
+
+import org.json.JSONObject;
 
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
@@ -39,7 +46,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    ViewPager mViewPager;
+    public ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +57,17 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         DatabaseHelper.initialize(this);
         DataService.initialize(this);
         if(DataService.getSharedService().shouldUpdate()){
-            DataService.getSharedService().refreshDataFromServer();
+            Log.d(MainActivity.class.getName(), "Refreshing data");
+            DataService.getSharedService().refreshDataFromServer(new JsonHttpResponseHandler(){
+                @Override
+                public void onSuccess(JSONObject response) {
+                    super.onSuccess(response);
+
+                    mViewPager.getAdapter().notifyDataSetChanged();
+                }
+            });
+        } else {
+            Log.d(MainActivity.class.getName(), "Not refreshing data");
         }
 
 
@@ -65,6 +82,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setOffscreenPageLimit(3);
 
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
@@ -102,6 +120,15 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.menu_main_refresh) {
+            Log.d(MainActivity.class.getName(), "Refreshing data");
+            DataService.getSharedService().refreshDataFromServer(new JsonHttpResponseHandler(){
+                @Override
+                public void onSuccess(JSONObject response) {
+                    super.onSuccess(response);
+
+                    mViewPager.getAdapter().notifyDataSetChanged();
+                }
+            });
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -122,11 +149,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
 
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends android.support.v4.app.FragmentPagerAdapter {
+    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
         public String[] titles = new String[]{
                 getResources().getString(R.string.title_section_now),
@@ -143,10 +171,25 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position){
-                case 2:
-                    return new VenueFragment();
+                case 1: {
+                    ShowsListFragment list = new ShowsListFragment();
+                    NavigationFragment retVal = new NavigationFragment(list);
+                    list.setNavigationFragment(retVal);
+                    return retVal;
+                }
+                case 2: {
+                    VenuesListFragment list = new VenuesListFragment();
+                    NavigationFragment retVal = new NavigationFragment(list);
+                    list.setNavigationFragment(retVal);
+                    return retVal;
+                }
             }
             return PlaceholderFragment.newInstance(position + 1);
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
         }
 
         @Override
@@ -194,6 +237,23 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
             return rootView;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // if there is a fragment and the back stack of this fragment is not empty,
+        // then emulate 'onBackPressed' behaviour, because in default, it is not working
+        FragmentManager fm = getSupportFragmentManager();
+        for (Fragment frag : fm.getFragments()) {
+            if (frag != null && frag.isVisible()) {
+                FragmentManager childFm = frag.getChildFragmentManager();
+                if (childFm.getBackStackEntryCount() > 0) {
+                    childFm.popBackStack();
+                    return;
+                }
+            }
+        }
+        super.onBackPressed();
     }
 
 }

@@ -1,6 +1,8 @@
 package com.ucbtheatre.dcm.app.data;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -47,34 +49,73 @@ public class DataService {
 
     //TODO need logic for when to update
     public boolean shouldUpdate(){
+        //TODO remove
+        try {
+            return DatabaseHelper.getSharedService().getVenueDAO().countOf() == 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return true;
     }
 
-    public void refreshDataFromServer(){
+
+
+    public void refreshDataFromServer(final JsonHttpResponseHandler parentHandler){
+        DatabaseHelper.getSharedService().clearDatabase();
 
         Log.d(TAG, "Starting to download schedule");
 
+        final ProgressDialog progressDialog = ProgressDialog.show(context, "Updating Schedule", "downloading schedule");
+
         client.get(DATA_JSON_URL, new JsonHttpResponseHandler(){
             @Override
-            public void onSuccess(JSONObject response) {
+            public void onSuccess(final JSONObject response) {
                 super.onSuccess(response);
 
-                try {
-                    JSONObject data = response.getJSONObject("data");
+                //TODO: this needs to be done on the background thread
+                    AsyncTask<JSONObject, String, String> updateSql = new AsyncTask<JSONObject, String, String>() {
+                        @Override
+                        protected String doInBackground(JSONObject... obj) {
+                            try {
+                                JSONObject data = obj[0].getJSONObject("data");
+                                publishProgress("Updating Venues");
+                                processVenues(data.getJSONArray("Venues"));
+                                publishProgress("Updating shows");
+                                processShows(data.getJSONArray("Shows"));
+                                publishProgress("Updating Schedules");
+                                processSchedules(data.getJSONArray("Schedules"));
+                            } catch (JSONException e) {
+                                Log.e(TAG, "Data service returned bad json", e);
+                                Toast.makeText(context, R.string.error_msg_schedule_download, Toast.LENGTH_LONG).show();
+                            } catch (SQLException e) {
+                                Log.e(TAG, "Problem saving the sql", e);
+                                Toast.makeText(context, R.string.error_msg_schedule_download, Toast.LENGTH_LONG).show();
+                            }
 
-                    processVenues(data.getJSONArray("Venues"));
-                    processShows(data.getJSONArray("Shows"));
-                    processSchedules(data.getJSONArray("Schedules"));
+                            return null;
+                        }
 
-                } catch (JSONException e) {
-                    Log.e(TAG, "Data service returned bad json", e);
-                    Toast.makeText(context, R.string.error_msg_schedule_download, Toast.LENGTH_LONG).show();
-                } catch (SQLException e) {
-                    Log.e(TAG, "Problem saving the sql", e);
-                    Toast.makeText(context, R.string.error_msg_schedule_download, Toast.LENGTH_LONG).show();
-                }
 
-                Log.d(TAG, "Schedule downloaded successfully");
+                        @Override
+                        protected void onProgressUpdate(String... values) {
+                            super.onProgressUpdate(values);
+                            String update = values[0];
+                            progressDialog.setMessage(update);
+                        }
+
+                        @Override
+                        protected void onPostExecute(String s) {
+                            super.onPostExecute(s);
+                            Log.d(TAG, "Schedule downloaded successfully");
+                            progressDialog.hide();
+
+                            if(parentHandler != null){
+                                parentHandler.onSuccess(response);
+                            }
+                        }
+                    };
+
+                updateSql.execute(response);
             }
 
             @Override
@@ -87,17 +128,31 @@ public class DataService {
 
                 //TODO more specific?
                 Toast.makeText(context, R.string.error_msg_schedule_download, Toast.LENGTH_LONG).show();
+                progressDialog.hide();
+
+                parentHandler.onFailure(statusCode, headers, responseBody, e);
             }
         });
 
     }
 
-    protected void processSchedules(JSONArray schedules) {
-
+    protected void processSchedules(JSONArray schedules) throws JSONException, SQLException {
+        for(int i = 0; i < schedules.length(); i++){
+            JSONObject scheduleJSON = schedules.getJSONObject(i);
+            Performance performance = new Performance(scheduleJSON);
+            Dao.CreateOrUpdateStatus status = DatabaseHelper.getSharedService().getPerformanceDAO().createOrUpdate(performance);
+            //Log.d(TAG, "Created? " + status.isCreated());
+        }
     }
 
-    protected void processShows(JSONArray shows) {
-
+    protected void processShows(JSONArray shows) throws JSONException, SQLException {
+        for(int i = 0; i < shows.length(); i++){
+            JSONObject showJSON = shows.getJSONObject(i);
+            //Log.d(TAG, "Processing show " + showJSON.getString("show_name"));
+            Show show = new Show(showJSON);
+            Dao.CreateOrUpdateStatus status = DatabaseHelper.getSharedService().getShowDAO().createOrUpdate(show);
+            //Log.d(TAG, "Created? " + status.isCreated());
+        }
     }
 
     protected void processVenues(JSONArray venues) throws JSONException, SQLException {
@@ -106,7 +161,7 @@ public class DataService {
             Log.d(TAG, "Processing venue " + venueJSON.getString("name"));
             Venue venue = new Venue(venueJSON);
             Dao.CreateOrUpdateStatus status = DatabaseHelper.getSharedService().getVenueDAO().createOrUpdate(venue);
-            Log.d(TAG, "Created? " + status.isCreated());
+            //Log.d(TAG, "Created? " + status.isCreated());
         }
     }
 

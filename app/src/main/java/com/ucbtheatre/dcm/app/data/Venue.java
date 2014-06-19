@@ -5,10 +5,12 @@ import com.j256.ormlite.field.DatabaseField;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 /**
  * Created by kurtguenther.
  */
-public class Venue {
+public class Venue implements Serializable {
 
     @DatabaseField(id=true)
     public int id;
