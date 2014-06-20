@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 
 /**
  * Created by kurtguenther.
@@ -60,8 +61,18 @@ public class Show implements Serializable {
                 castBuilder.append(" ");
                 castBuilder.append(lastName);
                 castBuilder.append(SEPARATOR);
+
+
+//                Performer p = new Performer(person);
+//                try {
+//                    DatabaseHelper.getSharedService().getPerformerDAO().createOrUpdate(p);
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
             }
         }
+
+
         performers = castBuilder.toString();
     }
 

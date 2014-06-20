@@ -18,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
+import java.util.concurrent.Callable;
 
 /**
  * Created by kurtguenther.
@@ -136,26 +137,51 @@ public class DataService {
 
     }
 
-    protected void processSchedules(JSONArray schedules) throws JSONException, SQLException {
-        for(int i = 0; i < schedules.length(); i++){
-            JSONObject scheduleJSON = schedules.getJSONObject(i);
-            Performance performance = new Performance(scheduleJSON);
-            Dao.CreateOrUpdateStatus status = DatabaseHelper.getSharedService().getPerformanceDAO().createOrUpdate(performance);
-            //Log.d(TAG, "Created? " + status.isCreated());
+    protected void processSchedules(final JSONArray schedules) throws JSONException, SQLException {
+
+        //Batching!
+        try {
+            DatabaseHelper.getSharedService().getPerformanceDAO().callBatchTasks(new Callable<Void>() {
+                public Void call() throws Exception {
+                    for(int i = 0; i < schedules.length(); i++){
+                        JSONObject scheduleJSON = schedules.getJSONObject(i);
+                        Performance performance = new Performance(scheduleJSON);
+                        Dao.CreateOrUpdateStatus status = DatabaseHelper.getSharedService().getPerformanceDAO().createOrUpdate(performance);
+                        //Log.d(TAG, "Created? " + status.isCreated());
+                    }
+                    return null;
+                }
+            });
+        } catch(Exception e){
+            e.printStackTrace();
         }
+
     }
 
-    protected void processShows(JSONArray shows) throws JSONException, SQLException {
-        for(int i = 0; i < shows.length(); i++){
-            JSONObject showJSON = shows.getJSONObject(i);
-            //Log.d(TAG, "Processing show " + showJSON.getString("show_name"));
-            Show show = new Show(showJSON);
-            Dao.CreateOrUpdateStatus status = DatabaseHelper.getSharedService().getShowDAO().createOrUpdate(show);
-            //Log.d(TAG, "Created? " + status.isCreated());
+    protected void processShows(final JSONArray shows) throws JSONException, SQLException {
+
+        try {
+            DatabaseHelper.getSharedService().getShowDAO().callBatchTasks(new Callable<Void>() {
+                public Void call() throws Exception {
+                    for (int i = 0; i < shows.length(); i++) {
+                        JSONObject showJSON = shows.getJSONObject(i);
+                        //Log.d(TAG, "Processing show " + showJSON.getString("show_name"));
+                        Show show = new Show(showJSON);
+                        Dao.CreateOrUpdateStatus status = DatabaseHelper.getSharedService().getShowDAO().createOrUpdate(show);
+                        //Log.d(TAG, "Created? " + status.isCreated());
+                    }
+
+                    return null;
+                }
+            });
+        } catch(Exception e){
+            e.printStackTrace();
         }
+
     }
 
     protected void processVenues(JSONArray venues) throws JSONException, SQLException {
+
         for(int i = 0; i < venues.length(); i++){
             JSONObject venueJSON = venues.getJSONObject(i);
             Log.d(TAG, "Processing venue " + venueJSON.getString("name"));

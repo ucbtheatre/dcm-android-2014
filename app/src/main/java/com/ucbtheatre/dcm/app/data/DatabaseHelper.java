@@ -20,7 +20,7 @@ import java.sql.SQLException;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = "dcm.db";
-    private static final int DATABASE_VERSION = 18;
+    private static final int DATABASE_VERSION = 20;
 
 
     //Static accessor
@@ -42,6 +42,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private Dao<Venue, Integer> venueDAO;
     private Dao<Show, Integer> showDAO;
     private Dao<Performance, Integer> performanceDAO;
+    private Dao<Performer, Integer> performerDAO;
 
 
     //Constructor and creation
@@ -57,6 +58,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Venue.class);
             TableUtils.createTable(connectionSource, Show.class);
             TableUtils.createTable(connectionSource, Performance.class);
+            TableUtils.createTable(connectionSource, Performer.class);
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
@@ -74,6 +76,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, Venue.class, true);
             TableUtils.dropTable(connectionSource, Show.class, true);
             TableUtils.dropTable(connectionSource, Performance.class, true);
+            TableUtils.dropTable(connectionSource, Performer.class, true);
 
             // after we drop the old databases, we create the new ones
             onCreate(null, connectionSource);
@@ -113,6 +116,17 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             }
         }
         return performanceDAO;
+    }
+
+    public Dao<Performer, Integer> getPerformerDAO() {
+        if (performerDAO == null) {
+            try {
+                performerDAO = getDao(Performer.class);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return performerDAO;
     }
 
     @Override
