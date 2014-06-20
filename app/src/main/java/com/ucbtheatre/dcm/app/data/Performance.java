@@ -1,5 +1,9 @@
 package com.ucbtheatre.dcm.app.data;
 
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
+
 import com.j256.ormlite.field.DatabaseField;
 
 import org.json.JSONException;
@@ -14,6 +18,8 @@ import java.util.Date;
  * Created by kurtguenther.
  */
 public class Performance implements Serializable {
+
+    public static final String FAVORITE_UPDATE = "com.ucbtheatre.dcm.app.favorite-update";
 
     @DatabaseField(id=true)
     public int id;
@@ -32,6 +38,9 @@ public class Performance implements Serializable {
 
     @DatabaseField
     public int minutes;
+
+    @DatabaseField
+    private boolean isFavorite;
 
     public Performance(){ }
 
@@ -75,8 +84,14 @@ public class Performance implements Serializable {
         return display;
     }
 
+    public void setIsFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
+        DatabaseHelper.getSharedService().notifyFavoriteUpdate(this);
+    }
 
-
+    public boolean getIsFavorite(){
+        return this.isFavorite;
+    }
 
     public String getFullTime() {
         Date start = new Date(((long)start_date) * 1000);

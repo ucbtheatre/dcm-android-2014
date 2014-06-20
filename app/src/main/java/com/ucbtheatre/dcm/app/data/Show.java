@@ -36,9 +36,6 @@ public class Show implements Serializable {
     @DatabaseField
     public String image;
 
-    @DatabaseField
-    public boolean isFavorite;
-
     public Show(){}
 
     public Show(JSONObject json) throws JSONException {
@@ -46,6 +43,7 @@ public class Show implements Serializable {
         name = json.getString("show_name");
         promo = json.optString("promo_blurb");
         city = json.optString("city");
+        image = json.optString("image");
 
         sortName = getSortName();
 

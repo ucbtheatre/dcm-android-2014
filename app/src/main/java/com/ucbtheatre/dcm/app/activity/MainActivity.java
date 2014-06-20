@@ -23,7 +23,9 @@ import com.ucbtheatre.dcm.app.R;
 import com.ucbtheatre.dcm.app.data.DataService;
 import com.ucbtheatre.dcm.app.data.DatabaseHelper;
 import com.ucbtheatre.dcm.app.data.Show;
+import com.ucbtheatre.dcm.app.fragment.FavoritesFragment;
 import com.ucbtheatre.dcm.app.fragment.NavigationFragment;
+import com.ucbtheatre.dcm.app.fragment.NowFragment;
 import com.ucbtheatre.dcm.app.fragment.ShowFragment;
 import com.ucbtheatre.dcm.app.fragment.ShowsListFragment;
 import com.ucbtheatre.dcm.app.fragment.VenuesListFragment;
@@ -171,15 +173,35 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position){
+                case 0: {
+                    NowFragment list = new NowFragment();
+                    NavigationFragment retVal = new NavigationFragment();
+
+                    retVal.setRootFragment(list);
+                    list.setNavigationFragment(retVal);
+                    return retVal;
+                }
                 case 1: {
                     ShowsListFragment list = new ShowsListFragment();
-                    NavigationFragment retVal = new NavigationFragment(list);
+                    NavigationFragment retVal = new NavigationFragment();
+
+                    retVal.setRootFragment(list);
                     list.setNavigationFragment(retVal);
                     return retVal;
                 }
                 case 2: {
                     VenuesListFragment list = new VenuesListFragment();
-                    NavigationFragment retVal = new NavigationFragment(list);
+                    NavigationFragment retVal = new NavigationFragment();
+
+                    retVal.setRootFragment(list);
+                    list.setNavigationFragment(retVal);
+                    return retVal;
+                }
+                case 3: {
+                    FavoritesFragment list = new FavoritesFragment();
+                    NavigationFragment retVal = new NavigationFragment();
+
+                    retVal.setRootFragment(list);
                     list.setNavigationFragment(retVal);
                     return retVal;
                 }

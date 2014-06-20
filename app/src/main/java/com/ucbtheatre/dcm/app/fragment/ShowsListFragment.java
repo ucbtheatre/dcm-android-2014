@@ -34,13 +34,8 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class ShowsListFragment extends Fragment {
+public class ShowsListFragment extends NavigableFragment {
 
-    private NavigationFragment navigationFragment;
-
-    public void setNavigationFragment(NavigationFragment navigationFragment) {
-        this.navigationFragment = navigationFragment;
-    }
 
     public StickyListHeadersListView listView;
 
@@ -153,8 +148,14 @@ public class ShowsListFragment extends Fragment {
         }
 
         protected String getHeaderString(Show show) {
-            String retVal = "" + show.sortName.subSequence(0, 1).charAt(0);
-            retVal = retVal.toUpperCase();
+            String retVal = "";
+            Character f = show.sortName.subSequence(0, 1).charAt(0);
+            if(Character.isAlphabetic(f)) {
+                retVal = "" + f;
+                retVal = retVal.toUpperCase();
+            } else {
+                return "#";
+            }
             return retVal;
         }
 

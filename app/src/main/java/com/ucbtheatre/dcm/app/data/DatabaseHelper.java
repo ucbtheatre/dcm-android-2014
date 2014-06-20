@@ -1,7 +1,9 @@
 package com.ucbtheatre.dcm.app.data;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
@@ -18,7 +20,8 @@ import java.sql.SQLException;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = "dcm.db";
-    private static final int DATABASE_VERSION = 16;
+    private static final int DATABASE_VERSION = 17;
+
 
     //Static accessor
     private static DatabaseHelper mSharedService;
@@ -26,6 +29,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     {
         return mSharedService;
     }
+
+    Context context;
 
     public static void initialize(Context context)
     {
@@ -42,6 +47,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     //Constructor and creation
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
@@ -113,5 +119,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public void close() {
         super.close();
         venueDAO = null;
+    }
+
+    public void notifyFavoriteUpdate(Performance performance){
+        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(Performance.FAVORITE_UPDATE));
     }
 }

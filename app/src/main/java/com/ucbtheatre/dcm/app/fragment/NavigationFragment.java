@@ -18,18 +18,24 @@ import com.ucbtheatre.dcm.app.data.Show;
  */
 public class NavigationFragment extends Fragment {
 
+    public static final String FRAGMENT_CLASS = "fragmentClass";
+    public static final String FRAGMENT_ARGUMENTS = "fragmentArguments";
+
     public interface NavigationFragmentListener {
         void pushFragment(Fragment fragment);
     }
 
     Fragment rootFragment;
 
-    public NavigationFragment() {
-        // Required empty public constructor
+    public void setRootFragment(Fragment rootFragment) {
+        this.rootFragment = rootFragment;
     }
 
-    public NavigationFragment(Fragment rootFragment){
-        this.rootFragment = rootFragment;
+    public NavigationFragment() {}
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -38,9 +44,27 @@ public class NavigationFragment extends Fragment {
         // Inflate the layout for this fragment
         View retVal = inflater.inflate(R.layout.fragment_navigation, container, false);
 
-        FragmentTransaction trans = getChildFragmentManager().beginTransaction();
-        trans.add(R.id.fragment_navigation_fragment, this.rootFragment);
-        trans.commit();
+        //Try to load the saved instance then
+        if(rootFragment == null && savedInstanceState != null) {
+            Class savedClass = (Class) savedInstanceState.getSerializable(FRAGMENT_CLASS);
+            Bundle arguments = savedInstanceState.getBundle(FRAGMENT_ARGUMENTS);
+            try {
+                rootFragment = (Fragment) savedClass.newInstance();
+                rootFragment.setArguments(arguments);
+
+            } catch (java.lang.InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(rootFragment != null) {
+            FragmentTransaction trans = getChildFragmentManager().beginTransaction();
+            trans.add(R.id.fragment_navigation_fragment, this.rootFragment);
+            trans.commit();
+        }
+
 
         return retVal;
     }
@@ -54,6 +78,14 @@ public class NavigationFragment extends Fragment {
         trans.add(R.id.fragment_navigation_fragment, newFragment);
         trans.addToBackStack(null);
         trans.commit();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putSerializable(FRAGMENT_CLASS, rootFragment.getClass());
+        outState.putBundle(FRAGMENT_ARGUMENTS, rootFragment.getArguments());
     }
 
     //TODO: need to save the rootFragment for orientation changes

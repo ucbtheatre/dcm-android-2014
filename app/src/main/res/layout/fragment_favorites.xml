@@ -1,0 +1,10 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ucbtheatre.dcm.app.fragment.FavoritesFragment">
+    <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+        android:id="@+id/fragment_favorites_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</FrameLayout>

@@ -2,13 +2,16 @@ package com.ucbtheatre.dcm.app.fragment;
 
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.ucbtheatre.dcm.app.R;
@@ -20,6 +23,7 @@ import com.ucbtheatre.dcm.app.widget.RemoteImageView;
 
 import org.w3c.dom.Text;
 
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -31,7 +35,7 @@ import java.util.zip.Inflater;
  * A simple {@link android.support.v4.app.Fragment} subclass.
  *
  */
-public class ShowFragment extends Fragment {
+public class ShowFragment extends Fragment  {
     public static final String EXTRA_SHOW = "com.ucbtheatre.dcm.app.extra-show";
 
     public Show show;
@@ -46,6 +50,9 @@ public class ShowFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_show, container, false);
     }
 
+    public String getShareString(Show show) {
+        return String.format("Check out %s at #DCM16", show.name);
+    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -64,6 +71,39 @@ public class ShowFragment extends Fragment {
 
         TextView blurb = (TextView) view.findViewById(R.id.fragment_show_blurb);
         blurb.setText(show.promo);
+
+        Button favoriteButton = (Button) view.findViewById(R.id.fragment_show_favorite_button);
+        favoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean newFavoriteValue = !performances.iterator().next().getIsFavorite();
+                for(Performance p : performances){
+                    p.setIsFavorite(newFavoriteValue);
+                    try {
+                        DatabaseHelper.getSharedService().getPerformanceDAO().update(p);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if(newFavoriteValue) {
+                    Toast.makeText(getActivity(), "Favorite Added", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "Favorite Removed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        Button shareButton = (Button) view.findViewById(R.id.fragment_show_share_button);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, getShareString(show));
+                shareIntent.setType("text/plain");
+                startActivity(Intent.createChooser(shareIntent, "Share"));
+            }
+        });
 
         createImage(view);
         createShowViews(view);
@@ -104,16 +144,9 @@ public class ShowFragment extends Fragment {
     protected void createImage(View view) {
         RemoteImageView imageView = (RemoteImageView) view.findViewById(R.id.fragment_show_image);
 
-        //TODO: remove default image
-        if(show.image != null) {
+        if(show.image != null && !show.image.isEmpty()) {
             try {
                 imageView.loadURL(new URL(show.image));
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                imageView.loadURL(new URL("http://i.imgur.com/DOF6cqT.jpeg"));
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
@@ -139,5 +172,7 @@ public class ShowFragment extends Fragment {
             castView.setTextSize(16);
             castSection.addView(castView);
         }
+
+        //50.63.202.26
     }
 }

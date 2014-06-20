@@ -22,15 +22,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class VenuesListFragment extends ListFragment {
-
-    private NavigationFragment navigationFragment;
-
-
-
-    public void setNavigationFragment(NavigationFragment navigationFragment) {
-        this.navigationFragment = navigationFragment;
-    }
+public class VenuesListFragment extends NavigableListFragment {
 
     public VenuesListFragment() { }
 
@@ -70,6 +62,8 @@ public class VenuesListFragment extends ListFragment {
             Bundle dataBundle = new Bundle();
             dataBundle.putSerializable(VenueFragment.EXTRA_VENUE, venue);
             venueFragment.setArguments(dataBundle);
+
+            venueFragment.setNavigationFragment(navigationFragment);
 
             navigationFragment.pushFragment(venueFragment);
         }
