@@ -20,5 +20,7 @@
     <string name="button_favorite">favorite</string>
     <string name="title_activity_about">About</string>
     <string name="hello_world">Hello world!</string>
+    <string name="no_favorites_title">No Favorites</string>
+    <string name="no_favorites_message">To favorite a show, click on the star on its show page.\n\nHint: this is a simple way to plan which shows you are going to.</string>
 
 </resources>

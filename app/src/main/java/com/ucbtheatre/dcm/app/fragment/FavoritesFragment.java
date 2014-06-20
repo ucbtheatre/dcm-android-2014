@@ -35,6 +35,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 public class FavoritesFragment extends NavigableFragment {
 
     StickyListHeadersListView listView;
+    View emptyView;
 
     public FavoritesFragment() {}
 
@@ -56,8 +57,11 @@ public class FavoritesFragment extends NavigableFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View retVal = inflater.inflate(R.layout.fragment_favorites, container, false);
 
+        emptyView = retVal.findViewById(android.R.id.empty);
+
         listView = (StickyListHeadersListView) retVal.findViewById(R.id.fragment_favorites_list);
         listView.setAdapter(new FavoritesListAdapter(getActivity(), new ArrayList<Performance>()));
+        listView.setEmptyView(emptyView);
         refreshData();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

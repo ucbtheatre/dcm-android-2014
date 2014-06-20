@@ -62,6 +62,7 @@ public class NowFragment extends NavigableFragment {
 
         timer = (TextView) retVal.findViewById(R.id.fragment_now_timer);
 
+
         timerContainer=  retVal.findViewById(R.id.fragment_now_time_container);
         scheduleContainer = retVal.findViewById(R.id.fragment_now_shows_container);
 
