@@ -26,6 +26,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="MainActivity" />
         </activity>
+        <activity
+            android:name="com.ucbtheatre.dcm.app.activity.SearchActivity"
+            android:label="@string/title_activity_search"
+            >
+        </activity>
     </application>
 
 </manifest>

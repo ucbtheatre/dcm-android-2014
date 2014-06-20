@@ -2,12 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.ucbtheatre.dcm.app.activity.MainActivity" >
 
-    <item android:id="@+id/catalog_search"
+    <item android:id="@+id/menu_main_search"
         android:title="@string/menu_main_search"
         android:orderInCategory="100"
         android:icon="@android:drawable/ic_menu_search"
-        android:showAsAction="collapseActionView|ifRoom"
-        android:actionViewClass="android.widget.SearchView"/>
+        android:showAsAction="always"/>
 
     <item android:id="@+id/menu_main_about"
         android:title="@string/menu_main_about"

@@ -49,7 +49,7 @@ public class VenuesListFragment extends NavigableListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View retVal = super.onCreateView(inflater, container, savedInstanceState);
         retVal.setBackgroundColor(Color.WHITE);
-        return 6retVal;
+        return retVal;
     }
 
     @Override

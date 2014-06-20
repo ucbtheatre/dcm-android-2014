@@ -22,5 +22,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="no_favorites_title">No Favorites</string>
     <string name="no_favorites_message">To favorite a show, click on the star on its show page.\n\nHint: this is a simple way to plan which shows you are going to.</string>
+    <string name="title_activity_search">Search</string>
+    <string name="title_search_section_performers">Performers</string>
+    <string name="title_search_section_shows">Shows</string>
 
 </resources>

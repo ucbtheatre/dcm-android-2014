@@ -22,6 +22,7 @@ import com.ucbtheatre.dcm.app.data.DatabaseHelper;
 import com.ucbtheatre.dcm.app.data.Show;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
@@ -50,17 +51,9 @@ public class ShowsListFragment extends NavigableFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View retVal = inflater.inflate(R.layout.fragment_shows_list, container, false);
 
-        List<Show> shows = null;
-        try {
-            shows = DatabaseHelper.getSharedService().getShowDAO().queryBuilder().orderBy("sortName", true).query();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
         listView = (StickyListHeadersListView) retVal.findViewById(R.id.fragment_shows_list);
 
-        listView.setAdapter(new ShowsListAdapter(getActivity(), shows));
-
+        listView.setAdapter(new ShowsListAdapter(getActivity(),0));
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -77,7 +70,21 @@ public class ShowsListFragment extends NavigableFragment {
             }
         });
 
+        refreshData();
+
         return retVal;
+    }
+
+    public void refreshData() {
+        try {
+            List<Show> shows = DatabaseHelper.getSharedService().getShowDAO().queryBuilder().orderBy("sortName", true).query();
+            ArrayAdapter<Show> adpt = (ArrayAdapter) listView.getAdapter();
+            adpt.clear();
+            adpt.addAll(shows);
+            adpt.notifyDataSetChanged();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -87,24 +94,23 @@ public class ShowsListFragment extends NavigableFragment {
     }
 
 
-    private class ShowsListAdapter extends BaseAdapter implements StickyListHeadersAdapter {
-        private List<Show> shows;
+    private class ShowsListAdapter extends ArrayAdapter<Show> implements StickyListHeadersAdapter {
         private LayoutInflater inflater;
 
-        public ShowsListAdapter(Context context, List<Show> shows) {
+        public ShowsListAdapter(Context context, int resource) {
+            super(context, resource);
             inflater = LayoutInflater.from(context);
-            this.shows = shows;
         }
 
-        @Override
-        public int getCount() {
-            return shows.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return shows.get(position);
-        }
+//        @Override
+//        public int getCount() {
+//            return shows.size();
+//        }
+//
+//        @Override
+//        public Object getItem(int position) {
+//            return shows.get(position);
+//        }
 
         @Override
         public long getItemId(int position) {
@@ -124,7 +130,7 @@ public class ShowsListFragment extends NavigableFragment {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            holder.text.setText(shows.get(position).toString());
+            holder.text.setText(getItem(position).toString());
 
             return convertView;
         }
@@ -142,7 +148,7 @@ public class ShowsListFragment extends NavigableFragment {
             }
 
             //set header text as first char in name
-            String headerText = getHeaderString(shows.get(position));
+            String headerText = getHeaderString(getItem(position));
             holder.text.setText(headerText);
             return convertView;
         }
@@ -161,7 +167,7 @@ public class ShowsListFragment extends NavigableFragment {
 
         @Override
         public long getHeaderId(int position) {
-            return getHeaderString(shows.get(position)).charAt(0);
+            return getHeaderString(getItem(position)).charAt(0);
         }
 
         class HeaderViewHolder {
