@@ -150,7 +150,7 @@ public class ShowsListFragment extends NavigableFragment {
         protected String getHeaderString(Show show) {
             String retVal = "";
             Character f = show.sortName.subSequence(0, 1).charAt(0);
-            if(Character.isAlphabetic(f)) {
+            if(Character.isLetter(f)) {
                 retVal = "" + f;
                 retVal = retVal.toUpperCase();
             } else {
