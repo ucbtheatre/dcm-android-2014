@@ -3,11 +3,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.ucbtheatre.dcm.app.fragment.NowFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
+        android:id="@+id/fragment_now_time_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/fragment_now_timer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="40sp"
+            android:layout_marginTop="-100dp"
+            tools:text="7 days\n14 hours\n29 minutes\n41 seconds"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:textSize="18sp"
+            android:text="Don't Think"
+            android:paddingBottom="15dp"/>
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/fragment_now_shows_container"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </LinearLayout>
 </FrameLayout>

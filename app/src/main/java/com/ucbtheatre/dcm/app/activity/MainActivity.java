@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -132,6 +133,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 }
             });
             return true;
+        } else if(id == R.id.menu_main_about){
+            Intent aboutIntent = new Intent(this, AboutActivity.class);
+            startActivity(aboutIntent);
         }
         return super.onOptionsItemSelected(item);
     }

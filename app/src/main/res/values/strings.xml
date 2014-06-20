@@ -18,5 +18,7 @@
     <string name="fragment_show_blank_title">Show</string>
     <string name="button_share">share</string>
     <string name="button_favorite">favorite</string>
+    <string name="title_activity_about">About</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>
