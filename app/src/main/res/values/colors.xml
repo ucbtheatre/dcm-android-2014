@@ -2,4 +2,5 @@
 <resources>
     <color name="header_background">#d65c5c</color>
     <color name="header_text">#ffffff</color>
+    <color name="light_gray">#cccccc</color>
 </resources>

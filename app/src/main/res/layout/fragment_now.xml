@@ -30,5 +30,11 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+            android:id="@+id/fragment_now_shows_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </se.emilsjolander.stickylistheaders.StickyListHeadersListView>
     </LinearLayout>
 </FrameLayout>

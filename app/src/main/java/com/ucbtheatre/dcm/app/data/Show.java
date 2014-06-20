@@ -42,7 +42,7 @@ public class Show implements Serializable {
         id = json.getInt("id");
         name = json.getString("show_name");
         promo = json.optString("promo_blurb");
-        city = json.optString("city");
+        city = json.optString("home_city");
         image = json.optString("image");
 
         sortName = getSortName();

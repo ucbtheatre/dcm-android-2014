@@ -107,7 +107,9 @@ public class RemoteImageView extends ImageView {
 
             @Override
             public void onLoadingFailed(String s, View view, FailReason failReason) {
-                //TODO
+                stopSpinnerAnimation();
+                setVisibility(GONE);
+                invalidate();
             }
 
             @Override

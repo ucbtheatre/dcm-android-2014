@@ -2,7 +2,9 @@ package com.ucbtheatre.dcm.app.fragment;
 
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -10,12 +12,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.ucbtheatre.dcm.app.R;
+import com.ucbtheatre.dcm.app.data.DatabaseHelper;
+import com.ucbtheatre.dcm.app.data.Performance;
+import com.ucbtheatre.dcm.app.data.Venue;
 
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
+import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
@@ -40,6 +53,7 @@ public class NowFragment extends NavigableFragment {
     View timerContainer;
     View scheduleContainer;
     TextView timer;
+    StickyListHeadersListView listView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,6 +64,24 @@ public class NowFragment extends NavigableFragment {
 
         timerContainer=  retVal.findViewById(R.id.fragment_now_time_container);
         scheduleContainer = retVal.findViewById(R.id.fragment_now_shows_container);
+
+        listView = (StickyListHeadersListView) retVal.findViewById(R.id.fragment_now_shows_list);
+        listView.setAreHeadersSticky(false);
+        listView.setAdapter(new NowListAdapter(getActivity(),0,0, new ArrayList<Performance>()));
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Performance perf = (Performance) adapterView.getItemAtPosition(position);
+
+                ShowFragment showFragment= new ShowFragment();
+                Bundle dataBundle = new Bundle();
+                dataBundle.putSerializable(ShowFragment.EXTRA_SHOW, perf.show);
+                showFragment.setArguments(dataBundle);
+
+                navigationFragment.pushFragment(showFragment);
+            }
+        });
 
         return retVal;
     }
@@ -77,23 +109,42 @@ public class NowFragment extends NavigableFragment {
             timerContainer.setVisibility(View.GONE);
             scheduleContainer.setVisibility(View.VISIBLE);
 
-//            //Load up some data for the upcoming.
-//            ArrayList<NowPerformance> perfs = Performance.getUpcomingShows(now);
-//            NowListAdapter mAdpt = new NowListAdapter(getActivity(), R.layout.list_schedule, R.id.schedule_show_name, perfs);
-//
-//            StickyListHeadersListView list = (StickyListHeadersListView) getView().findViewById(R.id.now_list);
-//            list.setAreHeadersSticky(false);
-//            list.setAdapter(mAdpt);
-//            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                @Override
-//                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                    Intent displayShow = new Intent(getActivity(), ViewShowFragment.class);
-//                    NowPerformance np= (NowPerformance) adapterView.getAdapter().getItem(i);
-//                    displayShow.putExtra(ViewShowFragment.SHOW_KEY, np.show_id);
-//                    startActivity(displayShow);
-//                }
-//            });
+            //Load up some data for the upcoming.
+            List<Performance> perfs = getUpcomingShow(now);
+
+            NowListAdapter adpt = (NowListAdapter) listView.getAdapter();
+            adpt.clear();
+            adpt.addAll(perfs);
+            adpt.notifyDataSetChanged();
         }
+    }
+
+    protected List<Performance> getUpcomingShow(Date date){
+        ArrayList<Performance> retVal = new ArrayList<Performance>();
+
+        List<Venue> venues = null;
+        try {
+            venues = DatabaseHelper.getSharedService().getVenueDAO().queryBuilder().orderBy("name",true).query();
+
+            Date now = new Date();
+            long nowSeconds = now.getTime() / (long) 1000;
+            Date upperLimit = new Date();
+            upperLimit.setTime(now.getTime() + (60 * 60 * 4 * 1000));
+            long upperSeconds = upperLimit.getTime() / (long) 1000;
+
+            for(Venue v : venues){
+                List<Performance> matches = DatabaseHelper.getSharedService().getPerformanceDAO().queryBuilder().limit(6L).orderBy("start_date", true).where().eq("venue_id", v).and().between("end_date", nowSeconds, upperSeconds).query();
+                //SELECT * FROM performance p LEFT JOIN show s on p.show_id = s.id where venue_id = ? and end_date > ? ORDER BY end_date LIMIT 2", new String[]{Integer.toString(v.id), Long.toString(start_date)});
+                retVal.addAll(matches);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        return retVal;
+
     }
 
     private void updateClock(){
@@ -141,6 +192,59 @@ public class NowFragment extends NavigableFragment {
             clock.removeCallbacks(updateClockRunnable);
         }
         super.onPause();
+    }
+
+    public class NowListAdapter extends ArrayAdapter<Performance> implements StickyListHeadersAdapter{
+
+        public NowListAdapter(Context context, int resource, int textViewResourceId, List<Performance> objects) {
+            super(context, resource, textViewResourceId, objects);
+        }
+
+        private class ScheduleHolder{
+            TextView time;
+            TextView name;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if(convertView == null){
+                LayoutInflater lf = LayoutInflater.from(getContext());
+                convertView = lf.inflate(R.layout.listview_venue_show, parent, false);
+                ScheduleHolder holder = new ScheduleHolder();
+                holder.name = (TextView) convertView.findViewById(R.id.listview_venue_show_title);
+                holder.time = (TextView) convertView.findViewById(R.id.listview_venue_show_time);
+                convertView.setTag(holder);
+            }
+
+            Performance perf = getItem(position);
+
+            ScheduleHolder sh = (ScheduleHolder) convertView.getTag();
+            sh.name.setText(perf.toString());
+            sh.time.setText(perf.getStartTime());
+
+            return convertView;
+        }
+
+        @Override
+        public View getHeaderView(int position, View convertView, ViewGroup parent) {
+            if(convertView == null){
+                LayoutInflater lf = LayoutInflater.from(getContext());
+                convertView = lf.inflate(R.layout.header_layout, parent, false);
+            }
+            TextView title = (TextView) convertView.findViewById(R.id.header_text);
+
+            Performance performance = getItem(position);
+            title.setText(performance.venue.name);
+
+            return convertView;
+        }
+
+        @Override
+        public long getHeaderId(int position) {
+            Performance performance = getItem(position);
+            int venue_id = performance.venue.name.hashCode();
+            return venue_id;
+        }
     }
 
 }

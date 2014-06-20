@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -69,10 +70,22 @@ public class ShowFragment extends Fragment  {
         TextView title =  (TextView) view.findViewById(R.id.fragment_show_title);
         title.setText(show.name);
 
+        if(show.city != null && !show.city.isEmpty()) {
+            TextView hometown = (TextView) view.findViewById(R.id.fragment_show_hometown);
+            hometown.setVisibility(View.VISIBLE);
+            hometown.setText(show.city);
+        }
+
         TextView blurb = (TextView) view.findViewById(R.id.fragment_show_blurb);
         blurb.setText(show.promo);
 
-        Button favoriteButton = (Button) view.findViewById(R.id.fragment_show_favorite_button);
+        final ImageButton favoriteButton = (ImageButton) view.findViewById(R.id.fragment_show_favorite_button);
+        if(performances.iterator().next().getIsFavorite()){
+            favoriteButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_favorite_selected));
+        } else {
+            favoriteButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_favorite_unselected));
+        }
+
         favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,10 +104,16 @@ public class ShowFragment extends Fragment  {
                 } else {
                     Toast.makeText(getActivity(), "Favorite Removed", Toast.LENGTH_SHORT).show();
                 }
+
+                if(performances.iterator().next().getIsFavorite()){
+                    favoriteButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_favorite_selected));
+                } else {
+                    favoriteButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_favorite_unselected));
+                }
             }
         });
 
-        Button shareButton = (Button) view.findViewById(R.id.fragment_show_share_button);
+        ImageButton shareButton = (ImageButton) view.findViewById(R.id.fragment_show_share_button);
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
