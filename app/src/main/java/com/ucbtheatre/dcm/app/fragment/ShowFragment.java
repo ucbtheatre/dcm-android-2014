@@ -2,9 +2,14 @@ package com.ucbtheatre.dcm.app.fragment;
 
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.j256.ormlite.field.DatabaseField;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.ucbtheatre.dcm.app.R;
 import com.ucbtheatre.dcm.app.data.DatabaseHelper;
 import com.ucbtheatre.dcm.app.data.Performance;
@@ -24,6 +30,7 @@ import com.ucbtheatre.dcm.app.widget.RemoteImageView;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -117,10 +124,39 @@ public class ShowFragment extends Fragment  {
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.putExtra(Intent.EXTRA_TEXT, getShareString(show));
                 shareIntent.setType("text/plain");
                 startActivity(Intent.createChooser(shareIntent, "Share"));
+
+                //TODO: image sharing isn't really working, so we're just disabling it.
+                //But I thought it might be useful to still have here.
+//                if(show.image != null && !show.image.isEmpty()){
+//
+//                    File cachedFile = ImageLoader.getInstance().getDiscCache().get(show.image);
+//
+//                    //File imagePath = cachedFile; //new File(getActivity().getFilesDir(), "images");
+//                    //File newFile = new File(imagePath, "share_image.png");
+//                    Uri contentUri = FileProvider.getUriForFile(getActivity(), "com.ucbtheatre.dcm.android", cachedFile);
+//
+//                    Intent intent = new Intent();
+//                    intent.setAction(Intent.ACTION_SEND);
+//                    intent.setType("image/*");
+//
+//                    List<ResolveInfo> resInfoList = getActivity().getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+//                    for (ResolveInfo resolveInfo : resInfoList) {
+//                        String packageName = resolveInfo.activityInfo.packageName;
+//                        getActivity().grantUriPermission(packageName, contentUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                    }
+//
+//                    intent.putExtra(Intent.EXTRA_TEXT, getShareString(show));
+//                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                    intent.putExtra(Intent.EXTRA_STREAM, contentUri);
+//                    startActivity(Intent.createChooser(intent, "Share"));
+//
+//                } else {
+                //}
             }
         });
 
