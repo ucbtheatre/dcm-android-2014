@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.ucbtheatre.dcm.app.R;
@@ -71,6 +72,8 @@ public class PerformersListFragment extends NavigableFragment {
             }
         });
 
+        listView.setFastScrollEnabled(true);
+
         return retVal;
     }
 
@@ -117,7 +120,7 @@ public class PerformersListFragment extends NavigableFragment {
         return performer.firstName.toLowerCase().startsWith(newFilter) || performer.lastName.toLowerCase().startsWith(newFilter);
     }
 
-    public class PerformersListAdapter extends ArrayAdapter<Performer> implements StickyListHeadersAdapter{
+    public class PerformersListAdapter extends ArrayAdapter<Performer> implements StickyListHeadersAdapter, SectionIndexer {
 
         private LayoutInflater inflater;
 
@@ -170,6 +173,47 @@ public class PerformersListFragment extends NavigableFragment {
         @Override
         public long getHeaderId(int position) {
             return getHeaderString(getItem(position)).hashCode();
+        }
+
+        private ArrayList<String> indexes;
+        private ArrayList<Integer> calculatedPositions;
+
+        @Override
+        public Object[] getSections() {
+            if(indexes == null){
+                indexes = new ArrayList<String>();
+            }
+            return indexes.toArray();
+        }
+
+        @Override
+        public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
+
+
+            indexes = new ArrayList<String>();
+            calculatedPositions = new ArrayList<Integer>();
+
+            char prev = 0;
+            for(int i = 0; i < getCount(); i ++){
+                Performer p = getItem(i);
+                if(p.firstName.charAt(0) != prev){
+                    prev = p.firstName.charAt(0);
+                    indexes.add(prev + "");
+                    calculatedPositions.add(i);
+                }
+            }
+        }
+
+        @Override
+        public int getPositionForSection(int sectionIndex) {
+            return calculatedPositions.get(sectionIndex);
+        }
+
+        @Override
+        public int getSectionForPosition(int position) {
+            Performer p = getItem(position);
+            return indexes.indexOf("" + p.firstName.toUpperCase().charAt(0));
         }
 
         class HeaderViewHolder {

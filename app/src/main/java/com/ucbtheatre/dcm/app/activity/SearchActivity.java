@@ -122,6 +122,7 @@ public class SearchActivity extends FragmentActivity implements ActionBar.TabLis
     }
 
     protected void performSearch(String query){
+        //TODO: be smarter about which we filter (it's fast enough now, but inefficient)
         showsFragment.setSearchString(query, true);
         performersFragment.setSearchString(query, true);
     }

@@ -1,18 +1,23 @@
 package com.ucbtheatre.dcm.app.fragment;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.ucbtheatre.dcm.app.R;
@@ -40,12 +45,7 @@ public class ShowsListFragment extends NavigableFragment {
 
     public StickyListHeadersListView listView;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public ShowsListFragment() {
-    }
+    public ShowsListFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,13 +53,13 @@ public class ShowsListFragment extends NavigableFragment {
 
         listView = (StickyListHeadersListView) retVal.findViewById(R.id.fragment_shows_list);
 
-        listView.setAdapter(new ShowsListAdapter(getActivity(),0));
+        listView.setAdapter(new ShowsListAdapter(getActivity(), 0));
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Show show = (Show) adapterView.getAdapter().getItem(position);
-                if(navigationFragment != null){
+                if (navigationFragment != null) {
                     ShowFragment showFragment = new ShowFragment();
                     Bundle dataBundle = new Bundle();
                     dataBundle.putSerializable(ShowFragment.EXTRA_SHOW, show);
@@ -71,6 +71,27 @@ public class ShowsListFragment extends NavigableFragment {
         });
 
         refreshData();
+
+        //HACK: this is due to a known error in KitKat, we have to delay the setting of Fast Scroll
+        //Otherwise it won't work on the shows page
+        //Reference: http://stackoverflow.com/questions/20680329/listview-fast-scroll-bar-not-visible-for-first-time-in-4-4-kitkat
+        if (Build.VERSION.SDK_INT >= 19) {
+            listView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @SuppressWarnings("deprecation")
+                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onGlobalLayout() {
+                    listView.setFastScrollEnabled(true);
+                    if (Build.VERSION.SDK_INT >= 16) {
+                        listView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    } else {
+                        listView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                }
+            });
+        } else {
+            listView.setFastScrollEnabled(true);
+        }
 
         return retVal;
     }
@@ -94,23 +115,13 @@ public class ShowsListFragment extends NavigableFragment {
     }
 
 
-    private class ShowsListAdapter extends ArrayAdapter<Show> implements StickyListHeadersAdapter {
+    private class ShowsListAdapter extends ArrayAdapter<Show> implements StickyListHeadersAdapter, SectionIndexer {
         private LayoutInflater inflater;
 
         public ShowsListAdapter(Context context, int resource) {
             super(context, resource);
             inflater = LayoutInflater.from(context);
         }
-
-//        @Override
-//        public int getCount() {
-//            return shows.size();
-//        }
-//
-//        @Override
-//        public Object getItem(int position) {
-//            return shows.get(position);
-//        }
 
         @Override
         public long getItemId(int position) {
@@ -176,6 +187,50 @@ public class ShowsListFragment extends NavigableFragment {
 
         class ViewHolder {
             TextView text;
+        }
+
+
+        //// SectionIndex methods
+
+        private ArrayList<String> indexes;
+        private ArrayList<Integer> calculatedPositions;
+
+        @Override
+        public Object[] getSections() {
+            if(indexes == null){
+                indexes = new ArrayList<String>();
+            }
+            return indexes.toArray();
+        }
+
+        @Override
+        public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
+
+
+            indexes = new ArrayList<String>();
+            calculatedPositions = new ArrayList<Integer>();
+
+            String prev = "";
+            for(int i = 0; i < getCount(); i ++){
+                Show p = getItem(i);
+                if(!getHeaderString(p).equals(prev)){
+                    prev = getHeaderString(p);
+                    indexes.add(prev);
+                    calculatedPositions.add(i);
+                }
+            }
+        }
+
+        @Override
+        public int getPositionForSection(int sectionIndex) {
+            return calculatedPositions.get(sectionIndex);
+        }
+
+        @Override
+        public int getSectionForPosition(int position) {
+            Show p = getItem(position);
+            return indexes.indexOf(getHeaderString(p));
         }
     }
 }
