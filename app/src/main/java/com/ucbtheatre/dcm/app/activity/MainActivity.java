@@ -267,6 +267,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         }
 
         super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
     }
 
 }
