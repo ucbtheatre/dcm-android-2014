@@ -188,7 +188,7 @@ public class ShowFragment extends Fragment  {
             TextView castView = new TextView(getActivity());
             castView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             castView.setText(cast[i]);
-            castView.setTextSize(16);
+            castView.setTextSize(18);
             castSection.addView(castView);
         }
 
