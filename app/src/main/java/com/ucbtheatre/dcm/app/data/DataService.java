@@ -18,6 +18,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
@@ -60,8 +62,19 @@ public class DataService {
     }
 
 
+    protected List<Performance> getExistingFavorites(){
+        List<Performance> retVal = new ArrayList<Performance>();
+        try {
+            retVal = DatabaseHelper.getSharedService().getPerformanceDAO().queryBuilder().orderBy("start_date", true).where().eq("isFavorite",true).query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return retVal;
+    }
 
     public void refreshDataFromServer(final JsonHttpResponseHandler parentHandler){
+        final List<Performance> existingFavorites = getExistingFavorites();
+
         DatabaseHelper.getSharedService().clearDatabase();
 
         Log.d(TAG, "Starting to download schedule");
@@ -85,6 +98,13 @@ public class DataService {
                                 processShows(data.getJSONArray("Shows"));
                                 publishProgress("Updating Schedules");
                                 processSchedules(data.getJSONArray("Schedules"));
+
+                                for(Performance oldPerformance : existingFavorites){
+                                    Performance newPerformance = DatabaseHelper.getSharedService().getPerformanceDAO().queryForId(oldPerformance.id);
+                                    newPerformance.setIsFavorite(true);
+                                    DatabaseHelper.getSharedService().getPerformanceDAO().update(newPerformance);
+                                }
+                                
                             } catch (JSONException e) {
                                 Log.e(TAG, "Data service returned bad json", e);
                                 Toast.makeText(context, R.string.error_msg_schedule_download, Toast.LENGTH_LONG).show();
@@ -143,7 +163,7 @@ public class DataService {
         try {
             DatabaseHelper.getSharedService().getPerformanceDAO().callBatchTasks(new Callable<Void>() {
                 public Void call() throws Exception {
-                    for(int i = 0; i < schedules.length(); i++){
+                    for (int i = 0; i < schedules.length(); i++) {
                         JSONObject scheduleJSON = schedules.getJSONObject(i);
                         Performance performance = new Performance(scheduleJSON);
                         Dao.CreateOrUpdateStatus status = DatabaseHelper.getSharedService().getPerformanceDAO().createOrUpdate(performance);
