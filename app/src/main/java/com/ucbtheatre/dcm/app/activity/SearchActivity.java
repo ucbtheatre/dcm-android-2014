@@ -26,6 +26,7 @@ import com.ucbtheatre.dcm.app.R;
 import com.ucbtheatre.dcm.app.fragment.FavoritesFragment;
 import com.ucbtheatre.dcm.app.fragment.NavigationFragment;
 import com.ucbtheatre.dcm.app.fragment.NowFragment;
+import com.ucbtheatre.dcm.app.fragment.PerformersListFragment;
 import com.ucbtheatre.dcm.app.fragment.ShowsListFragment;
 import com.ucbtheatre.dcm.app.fragment.ShowsListSearchFragment;
 import com.ucbtheatre.dcm.app.fragment.VenuesListFragment;
@@ -40,7 +41,7 @@ public class SearchActivity extends FragmentActivity implements ActionBar.TabLis
     SearchView searchView;
 
     ShowsListSearchFragment showsFragment;
-    Fragment performerFragment;
+    PerformersListFragment performersFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,7 @@ public class SearchActivity extends FragmentActivity implements ActionBar.TabLis
 
         //Create the two fragments
         showsFragment = new ShowsListSearchFragment();
+        performersFragment = new PerformersListFragment();
 
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
@@ -121,6 +123,7 @@ public class SearchActivity extends FragmentActivity implements ActionBar.TabLis
 
     protected void performSearch(String query){
         showsFragment.setSearchString(query, true);
+        performersFragment.setSearchString(query, true);
     }
 
     @Override
@@ -177,11 +180,11 @@ public class SearchActivity extends FragmentActivity implements ActionBar.TabLis
                     return retVal;
                 }
                 case 1: {
-                    VenuesListFragment list = new VenuesListFragment();
+
                     NavigationFragment retVal = new NavigationFragment();
 
-                    retVal.setRootFragment(list);
-                    list.setNavigationFragment(retVal);
+                    retVal.setRootFragment(performersFragment);
+                    performersFragment.setNavigationFragment(retVal);
                     return retVal;
                 }
             }

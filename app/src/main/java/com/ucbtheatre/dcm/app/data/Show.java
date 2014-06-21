@@ -63,12 +63,13 @@ public class Show implements Serializable {
                 castBuilder.append(SEPARATOR);
 
 
-//                Performer p = new Performer(person);
-//                try {
-//                    DatabaseHelper.getSharedService().getPerformerDAO().createOrUpdate(p);
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
+                //TODO: this should be abstracted elsewhere so we can benefit from batching
+                Performer p = new Performer(person);
+                try {
+                    DatabaseHelper.getSharedService().getPerformerDAO().createOrUpdate(p);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
