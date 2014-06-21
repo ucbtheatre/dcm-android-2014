@@ -52,7 +52,7 @@ public class ShowFragment extends Fragment  {
     }
 
     public String getShareString(Show show) {
-        return String.format("Check out %s at #DCM16", show.name);
+        return String.format("http://delclosemarathon.com/performance/detail/%d check out \"%s\" at #DCM16", show.id, show.name);
     }
 
     @Override
