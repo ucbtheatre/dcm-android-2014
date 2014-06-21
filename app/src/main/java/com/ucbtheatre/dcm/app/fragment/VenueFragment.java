@@ -1,6 +1,8 @@
 package com.ucbtheatre.dcm.app.fragment;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.ucbtheatre.dcm.app.R;
@@ -83,6 +86,15 @@ public class VenueFragment extends NavigableFragment implements Serializable {
 
         title = (TextView) getView().findViewById(R.id.fragment_venue_title);
         title.setText(venue.name);
+
+        ImageButton mapButton = (ImageButton) getView().findViewById(R.id.fragment_venue_map);
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(venue.gmaps));
+                startActivity(mapIntent);
+            }
+        });
     }
 
     @Override

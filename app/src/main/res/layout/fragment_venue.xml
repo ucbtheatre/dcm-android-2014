@@ -5,12 +5,30 @@
     android:orientation="vertical"
     tools:context="com.ucbtheatre.dcm.app.fragment.VenueFragment"
     android:background="@android:color/white">
-    <TextView
-        android:id="@+id/fragment_venue_title"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="28sp"
-        tools:text="UCB Theatre East"/>
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
+        <TextView
+            android:id="@+id/fragment_venue_title"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            tools:text="UCB Theatre East"/>
+        <ImageButton
+            android:id="@+id/fragment_venue_map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/image_button_background"
+            android:src="@drawable/ic_map_marker"
+            />
+        </LinearLayout>
+
     <se.emilsjolander.stickylistheaders.StickyListHeadersListView
         android:id="@+id/fragment_venue_shows_list"
         android:layout_width="match_parent"

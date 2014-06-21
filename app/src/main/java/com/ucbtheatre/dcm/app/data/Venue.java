@@ -45,6 +45,7 @@ public class Venue implements Serializable {
         address = json.optString("address");
         image = json.optString("image");
         url = json.optString("url");
+        gmaps = json.optString("map_url");
     }
 
     @Override
