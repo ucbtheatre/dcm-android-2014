@@ -101,10 +101,12 @@ public class DataService {
 
                                 for(Performance oldPerformance : existingFavorites){
                                     Performance newPerformance = DatabaseHelper.getSharedService().getPerformanceDAO().queryForId(oldPerformance.id);
-                                    newPerformance.setIsFavorite(true);
-                                    DatabaseHelper.getSharedService().getPerformanceDAO().update(newPerformance);
+                                    if(newPerformance != null) {
+                                        newPerformance.setIsFavorite(true);
+                                        DatabaseHelper.getSharedService().getPerformanceDAO().update(newPerformance);
+                                    }
                                 }
-                                
+
                             } catch (JSONException e) {
                                 Log.e(TAG, "Data service returned bad json", e);
                                 Toast.makeText(context, R.string.error_msg_schedule_download, Toast.LENGTH_LONG).show();
