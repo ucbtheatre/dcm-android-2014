@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
@@ -127,7 +128,9 @@ public class ShowFragment extends Fragment  {
 
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.putExtra(Intent.EXTRA_TEXT, getShareString(show));
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Del Close Marathon 16"); //For a nice email
                 shareIntent.setType("text/plain");
+
                 startActivity(Intent.createChooser(shareIntent, "Share"));
 
                 //TODO: image sharing isn't really working, so we're just disabling it.
