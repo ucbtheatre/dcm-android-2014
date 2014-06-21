@@ -1,5 +1,6 @@
 package com.ucbtheatre.dcm.app.activity;
 
+import java.util.List;
 import java.util.Locale;
 
 import android.app.ActionBar;
@@ -52,13 +53,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
      * The {@link ViewPager} that will host the section contents.
      */
     public ViewPager mViewPager;
+    protected Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         //Initialize the services
         DatabaseHelper.initialize(this);
@@ -152,6 +152,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         // When the given tab is selected, switch to the corresponding page in
         // the ViewPager.
         mViewPager.setCurrentItem(tab.getPosition());
+        FragmentManager fm = getSupportFragmentManager();
+        List<Fragment> frags = fm.getFragments();
+        if(frags != null) {
+            currentFragment = fm.getFragments().get(tab.getPosition());
+            Log.d(MainActivity.class.getName(), "Switching to tab " + Integer.toString(tab.getPosition()));
+        }
     }
 
     @Override
@@ -181,8 +187,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position){
                 case 0: {
                     NowFragment list = new NowFragment();
@@ -240,18 +244,28 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     @Override
     public void onBackPressed() {
+
         // if there is a fragment and the back stack of this fragment is not empty,
         // then emulate 'onBackPressed' behaviour, because in default, it is not working
-        FragmentManager fm = getSupportFragmentManager();
-        for (Fragment frag : fm.getFragments()) {
-            if (frag != null && frag.isVisible()) {
-                FragmentManager childFm = frag.getChildFragmentManager();
-                if (childFm.getBackStackEntryCount() > 0) {
-                    childFm.popBackStack();
-                    return;
-                }
+        if(currentFragment != null){
+            FragmentManager childFm = currentFragment.getChildFragmentManager();
+            if (childFm.getBackStackEntryCount() > 0) {
+                childFm.popBackStack();
+                return;
+            }
+        } else {
+            //HACK: this assumes the current Fragment is the first if it's null
+            //This is because the tabs are set before the fragments made
+            FragmentManager fm = getSupportFragmentManager();
+            Fragment current = fm.getFragments().get(0);
+
+            FragmentManager childFm = current.getChildFragmentManager();
+            if (childFm.getBackStackEntryCount() > 0) {
+                childFm.popBackStack();
+                return;
             }
         }
+
         super.onBackPressed();
     }
 
