@@ -89,4 +89,5 @@ public class NavigationFragment extends Fragment {
     }
 
     //TODO: need to save the rootFragment for orientation changes
+    //TODO: we are punting on this because we are forcing portrait, but it should be revisited.
 }

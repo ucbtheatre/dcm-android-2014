@@ -49,10 +49,7 @@ public class DataService {
     protected AsyncHttpClient client;
 
 
-
-    //TODO need logic for when to update
     public boolean shouldUpdate(){
-        //TODO remove
         try {
             return DatabaseHelper.getSharedService().getVenueDAO().countOf() == 0;
         } catch (SQLException e) {
@@ -85,8 +82,6 @@ public class DataService {
             @Override
             public void onSuccess(final JSONObject response) {
                 super.onSuccess(response);
-
-                //TODO: this needs to be done on the background thread
                     AsyncTask<JSONObject, String, String> updateSql = new AsyncTask<JSONObject, String, String>() {
                         @Override
                         protected String doInBackground(JSONObject... obj) {

@@ -2,6 +2,7 @@ package com.ucbtheatre.dcm.app.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -50,7 +51,8 @@ public class RemoteImageView extends ImageView {
         setScaleType(ScaleType.CENTER);
 
         //Set the spinner in motion
-        Animation rotation = new RotateAnimation(0.f, 360.f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f );
+        //TODO: why do I have to set the Y value to slightly off-center, otherwise we get a wobble
+        Animation rotation = new RotateAnimation(0.f, 360.f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.486f );
         rotation.setDuration(1000);
         rotation.setRepeatCount(Animation.INFINITE);
         this.startAnimation(rotation);
@@ -120,7 +122,8 @@ public class RemoteImageView extends ImageView {
 
             @Override
             public void onLoadingCancelled(String s, View view) {
-                //TODO
+                stopSpinnerAnimation();
+                invalidate();
             }
         });
     }
