@@ -1,3 +1,5 @@
+import java.util.regex.Pattern
+
 apply plugin: 'android'
 
 android {
@@ -7,8 +9,6 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 19
-        versionCode 14
-        versionName "2.0"
     }
 
     signingConfigs {
@@ -44,3 +44,21 @@ dependencies {
     compile 'se.emilsjolander:stickylistheaders:2.4.0'
 
 }
+
+task('increaseVersionCode') << {
+    def manifestFile = file("src/main/AndroidManifest.xml")
+    def pattern = Pattern.compile("versionCode=\"(\\d+)\"")
+    def manifestText = manifestFile.getText()
+    def matcher = pattern.matcher(manifestText)
+    matcher.find()
+    def versionCode = Integer.parseInt(matcher.group(1))
+    def manifestContent = matcher.replaceAll("versionCode=\"" + ++versionCode + "\"")
+    manifestFile.write(manifestContent)
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name == 'generateReleaseBuildConfig') {
+        task.dependsOn 'increaseVersionCode'
+    }
+}
+
