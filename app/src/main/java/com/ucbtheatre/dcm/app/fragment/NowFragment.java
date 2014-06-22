@@ -38,6 +38,8 @@ public class NowFragment extends NavigableFragment {
 
     //June 27, 2014, 4 PM EST, pulled from http://www.unixtimestamp.com/
     public static final Date MARATHON_START_DATE = new Date(((long)1403899200) * 1000);
+    //June 29, 2014, 11:30 PM EST, pulled from http://www.unixtimestamp.com/
+    public static final Date MARATHON_END_DATE = new Date(((long)1404099000) * 1000);
 
     private Handler clock;
     private Runnable updateClockRunnable = new Runnable() {
@@ -52,6 +54,9 @@ public class NowFragment extends NavigableFragment {
 
     View timerContainer;
     View scheduleContainer;
+    View endContainer;
+
+    List<View> containers;
     TextView timer;
     StickyListHeadersListView listView;
 
@@ -63,8 +68,14 @@ public class NowFragment extends NavigableFragment {
         timer = (TextView) retVal.findViewById(R.id.fragment_now_timer);
 
 
+        containers = new ArrayList<View>();
+
         timerContainer=  retVal.findViewById(R.id.fragment_now_time_container);
+        containers.add(timerContainer);
         scheduleContainer = retVal.findViewById(R.id.fragment_now_shows_container);
+        containers.add(scheduleContainer);
+        endContainer = retVal.findViewById(R.id.fragment_now_end_container);
+        containers.add(endContainer);
 
         listView = (StickyListHeadersListView) retVal.findViewById(R.id.fragment_now_shows_list);
         listView.setAreHeadersSticky(false);
@@ -93,22 +104,33 @@ public class NowFragment extends NavigableFragment {
         updateUI();
     }
 
+    private void showContainer(View container){
+        for(View v : containers){
+            if(v != container) {
+                v.setVisibility(View.GONE);
+            }
+        }
+
+        container.setVisibility(View.VISIBLE);
+    }
+
     private void updateUI(){
         Date now = new Date();
 
         if(now.before(MARATHON_START_DATE)) {
-            timerContainer.setVisibility(View.VISIBLE);
-            scheduleContainer.setVisibility(View.GONE);
+
+            showContainer(timerContainer);
 
             updateClock();
 
             clock = new Handler();
             updateClockRunnable.run();
 
+        } else if (now.after(MARATHON_END_DATE)){
+            showContainer(endContainer);
         }
         else {
-            timerContainer.setVisibility(View.GONE);
-            scheduleContainer.setVisibility(View.VISIBLE);
+            showContainer(scheduleContainer);
 
             //Load up some data for the upcoming.
             List<Performance> perfs = getUpcomingShow(now);

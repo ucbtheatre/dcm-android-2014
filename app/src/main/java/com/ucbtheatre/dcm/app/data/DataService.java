@@ -76,7 +76,7 @@ public class DataService {
 
         Log.d(TAG, "Starting to download schedule");
 
-        final ProgressDialog progressDialog = ProgressDialog.show(context, "Updating Schedule", "downloading schedule");
+        final ProgressDialog progressDialog = ProgressDialog.show(context, "Updating Schedule", "Opening");
 
         client.get(DATA_JSON_URL, new JsonHttpResponseHandler(){
             @Override
@@ -87,11 +87,11 @@ public class DataService {
                         protected String doInBackground(JSONObject... obj) {
                             try {
                                 JSONObject data = obj[0].getJSONObject("data");
-                                publishProgress("Updating Venues");
+                                publishProgress("First beats");
                                 processVenues(data.getJSONArray("Venues"));
-                                publishProgress("Updating shows");
+                                publishProgress("Second beats");
                                 processShows(data.getJSONArray("Shows"));
-                                publishProgress("Updating Schedules");
+                                publishProgress("Third beats");
                                 processSchedules(data.getJSONArray("Schedules"));
 
                                 for(Performance oldPerformance : existingFavorites){
