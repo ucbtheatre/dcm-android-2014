@@ -2,13 +2,18 @@ package com.ucbtheatre.dcm.app.fragment;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +24,13 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ucbtheatre.dcm.app.R;
 
 import com.ucbtheatre.dcm.app.activity.MainActivity;
 import com.ucbtheatre.dcm.app.data.DatabaseHelper;
+import com.ucbtheatre.dcm.app.data.Performance;
 import com.ucbtheatre.dcm.app.data.Show;
 
 import java.sql.SQLException;
@@ -69,6 +76,34 @@ public class ShowsListFragment extends NavigableFragment {
                 }
             }
         });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Show show = (Show) adapterView.getAdapter().getItem(position);
+                boolean newFavoriteValue = !show.getIsFavorite();
+                show.setIsFavorite(newFavoriteValue);
+
+                if(newFavoriteValue) {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.toast_favorite_added), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.toast_favorite_removed), Toast.LENGTH_SHORT).show();
+                }
+
+                return true;
+            }
+        });
+
+        //Listen for changes to the favorites
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Performance.FAVORITE_UPDATE);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                refreshData();
+            }
+        }, filter);
+
 
         refreshData();
 
@@ -142,6 +177,13 @@ public class ShowsListFragment extends NavigableFragment {
             }
 
             holder.text.setText(getItem(position).toString());
+
+            //set the background based on favorite status
+            if(getItem(position).getIsFavorite()) {
+                convertView.setBackgroundColor(getResources().getColor(R.color.favorite_background));
+            } else {
+                convertView.setBackgroundColor(Color.TRANSPARENT);
+            }
 
             return convertView;
         }

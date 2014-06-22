@@ -16,10 +16,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ucbtheatre.dcm.app.R;
 import com.ucbtheatre.dcm.app.data.DatabaseHelper;
 import com.ucbtheatre.dcm.app.data.Performance;
+import com.ucbtheatre.dcm.app.data.Show;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -75,6 +77,25 @@ public class FavoritesFragment extends NavigableFragment {
             showFragment.setArguments(dataBundle);
 
             navigationFragment.pushFragment(showFragment);
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Performance perf = (Performance) adapterView.getItemAtPosition(position);
+
+                Show show = perf.show;
+                boolean newFavoriteValue = !show.getIsFavorite();
+                show.setIsFavorite(newFavoriteValue);
+
+                if(newFavoriteValue) {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.toast_favorite_added), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.toast_favorite_removed), Toast.LENGTH_SHORT).show();
+                }
+
+                return true;
             }
         });
 

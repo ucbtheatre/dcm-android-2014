@@ -25,5 +25,7 @@
     <string name="title_activity_search">Search</string>
     <string name="title_search_section_performers">Performers</string>
     <string name="title_search_section_shows">Shows</string>
+    <string name="toast_favorite_added">Favorite Added</string>
+    <string name="toast_favorite_removed">Favorite Removed</string>
 
 </resources>

@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created by kurtguenther.
@@ -76,6 +77,28 @@ public class Show implements Serializable {
 
         performers = castBuilder.toString();
     }
+
+    public void setIsFavorite(boolean isFavorite){
+        try {
+            List<Performance> performances = DatabaseHelper.getSharedService().getPerformanceDAO().queryForEq("show_id", this);
+            for(Performance p : performances){
+                p.setIsFavorite(isFavorite);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean getIsFavorite(){
+        try {
+            List<Performance> performances = DatabaseHelper.getSharedService().getPerformanceDAO().queryForEq("show_id", this);
+            return performances.get(0).getIsFavorite();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
     protected String getSortName() {
 

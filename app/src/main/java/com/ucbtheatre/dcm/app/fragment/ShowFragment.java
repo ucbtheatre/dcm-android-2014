@@ -98,26 +98,16 @@ public class ShowFragment extends Fragment  {
             @Override
             public void onClick(View view) {
                 boolean newFavoriteValue = !performances.iterator().next().getIsFavorite();
-                for(Performance p : performances){
-                    p.setIsFavorite(newFavoriteValue);
-                    try {
-                        DatabaseHelper.getSharedService().getPerformanceDAO().update(p);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
+                show.setIsFavorite(newFavoriteValue);
 
                 if(newFavoriteValue) {
-                    Toast.makeText(getActivity(), "Favorite Added", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getActivity(), "Favorite Removed", Toast.LENGTH_SHORT).show();
-                }
-
-                if(performances.iterator().next().getIsFavorite()){
+                    Toast.makeText(getActivity(), getResources().getString(R.string.toast_favorite_added), Toast.LENGTH_SHORT).show();
                     favoriteButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_favorite_selected));
                 } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.toast_favorite_removed), Toast.LENGTH_SHORT).show();
                     favoriteButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_favorite_unselected));
                 }
+
             }
         });
 

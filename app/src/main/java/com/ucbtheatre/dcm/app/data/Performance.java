@@ -86,6 +86,11 @@ public class Performance implements Serializable {
 
     public void setIsFavorite(boolean isFavorite) {
         this.isFavorite = isFavorite;
+        try {
+            DatabaseHelper.getSharedService().getPerformanceDAO().update(this);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         DatabaseHelper.getSharedService().notifyFavoriteUpdate(this);
     }
 
