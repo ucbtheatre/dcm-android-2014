@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.j256.ormlite.stmt.SelectArg;
 import com.ucbtheatre.dcm.app.R;
 import com.ucbtheatre.dcm.app.data.DatabaseHelper;
 import com.ucbtheatre.dcm.app.data.Performer;
@@ -41,7 +42,8 @@ public class PerformerFragment extends NavigableFragment {
 
         performer = (Performer) getArguments().getSerializable(EXTRA_PERFORMER);
         try {
-            shows = DatabaseHelper.getSharedService().getShowDAO().queryBuilder().where().like("performers", "%"+performer.toString()+"%").query();
+            SelectArg name = new SelectArg("%" +performer.toString()+ "%");
+            shows = DatabaseHelper.getSharedService().getShowDAO().queryBuilder().where().like("performers", name).query();
         } catch (SQLException e) {
             e.printStackTrace();
         }

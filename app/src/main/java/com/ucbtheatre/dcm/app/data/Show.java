@@ -66,10 +66,12 @@ public class Show implements Serializable {
 
                 //TODO: this should be abstracted elsewhere so we can benefit from batching
                 Performer p = new Performer(person);
-                try {
-                    DatabaseHelper.getSharedService().getPerformerDAO().createOrUpdate(p);
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                if(p.firstName.length() > 0) { // Some bad data
+                    try {
+                        DatabaseHelper.getSharedService().getPerformerDAO().createOrUpdate(p);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

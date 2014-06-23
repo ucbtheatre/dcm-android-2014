@@ -197,6 +197,9 @@ public class PerformersListFragment extends NavigableFragment {
             char prev = 0;
             for(int i = 0; i < getCount(); i ++){
                 Performer p = getItem(i);
+                if(p.firstName.length() == 0 ){
+                    ;
+                }
                 if(p.firstName.charAt(0) != prev){
                     prev = p.firstName.charAt(0);
                     indexes.add(prev + "");
