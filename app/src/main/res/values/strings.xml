@@ -27,5 +27,6 @@
     <string name="title_search_section_shows">Shows</string>
     <string name="toast_favorite_added">Favorite Added</string>
     <string name="toast_favorite_removed">Favorite Removed</string>
+    <string name="credit_names">With help from:\n*Cody Snider\n*Andy Nagel</string>
 
 </resources>

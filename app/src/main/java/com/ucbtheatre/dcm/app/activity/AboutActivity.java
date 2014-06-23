@@ -44,10 +44,7 @@ public class AboutActivity extends Activity {
 
         List<FaceInfo> faces = new ArrayList<FaceInfo>();
         faces.add(new FaceInfo(R.drawable.kurt, "Kurt Guenther"));
-        faces.add(new FaceInfo(R.drawable.ben, "Andy Nagel"));
         faces.add(new FaceInfo(R.drawable.ben, "Ben Ragheb"));
-        faces.add(new FaceInfo(R.drawable.kurt, "Cody Snider"));
-
 
         gridView = (GridView) findViewById(R.id.activity_about_faces);
 
