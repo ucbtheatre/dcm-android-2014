@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by kurtguenther.
@@ -72,7 +73,9 @@ public class Performance implements Serializable {
 
     public String getStartDateTime() {
         Date date = new Date(((long)start_date) * 1000);
+
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE hh:mm a");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("America/New_York"));
         String display = simpleDateFormat.format(date);
         return display;
     }
@@ -80,6 +83,7 @@ public class Performance implements Serializable {
     public String getStartTime() {
         Date date = new Date(((long)start_date) * 1000);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("America/New_York"));
         String display = simpleDateFormat.format(date);
         return display;
     }
@@ -101,12 +105,14 @@ public class Performance implements Serializable {
     public String getFullTime() {
         Date start = new Date(((long)start_date) * 1000);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE hh:mm");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("America/New_York"));
         String display = simpleDateFormat.format(start);
 
         display = display + " - ";
 
         Date end = new Date(((long)end_date) * 1000);
         SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("hh:mm a");
+        simpleDateFormat2.setTimeZone(TimeZone.getTimeZone("America/New_York"));
         display = display + simpleDateFormat2.format(end);
         return display;
     }
@@ -114,6 +120,7 @@ public class Performance implements Serializable {
     public String getStartDay() {
         Date date = new Date(((long)start_date) * 1000);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("America/New_York"));
         String display = simpleDateFormat.format(date);
         return display;
     }
