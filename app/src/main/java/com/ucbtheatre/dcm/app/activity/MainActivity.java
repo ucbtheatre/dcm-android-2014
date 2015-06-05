@@ -8,6 +8,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -22,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestHandle;
 import com.ucbtheatre.dcm.app.R;
 import com.ucbtheatre.dcm.app.data.DataService;
 import com.ucbtheatre.dcm.app.data.DatabaseHelper;
@@ -61,24 +63,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-
         //Initialize the services
         DatabaseHelper.initialize(this);
         DataService.initialize(this);
-        if(DataService.getSharedService().shouldUpdate()){
-            Log.d(MainActivity.class.getName(), "Refreshing data");
-            DataService.getSharedService().refreshDataFromServer(new JsonHttpResponseHandler(){
-                @Override
-                public void onSuccess(JSONObject response) {
-                    super.onSuccess(response);
-
-                    mViewPager.getAdapter().notifyDataSetChanged();
-                }
-            });
-        } else {
-            Log.d(MainActivity.class.getName(), "Not refreshing data");
-        }
-
 
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
@@ -114,6 +101,28 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
+
+        //Hack: not sure why I need to delay the call here
+        //It has to be something to do with something not holding a reference
+        //But I can't seem to work it out, since the call runs fine N milliseconds later.
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(DataService.getSharedService().shouldUpdate()){
+                    Log.d(MainActivity.class.getName(), "Refreshing data");
+                    DataService.getSharedService().refreshDataFromServer(new JsonHttpResponseHandler(){
+                        @Override
+                        public void onSuccess(JSONObject response) {
+                            super.onSuccess(response);
+                            mViewPager.getAdapter().notifyDataSetChanged();
+                        }
+                    });
+                } else {
+                    Log.d(MainActivity.class.getName(), "Not refreshing data");
+                }
+            }
+        }, 300);
     }
 
 
@@ -134,7 +143,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 @Override
                 public void onSuccess(JSONObject response) {
                     super.onSuccess(response);
-
                     mViewPager.getAdapter().notifyDataSetChanged();
                 }
             });

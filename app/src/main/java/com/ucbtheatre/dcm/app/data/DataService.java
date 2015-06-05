@@ -11,6 +11,7 @@ import com.j256.ormlite.dao.Dao;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestHandle;
 import com.ucbtheatre.dcm.app.R;
 
 import org.apache.http.Header;
@@ -67,37 +68,33 @@ public class DataService {
         return retVal;
     }
 
-    public void refreshDataFromServer(final JsonHttpResponseHandler parentHandler){
+    public RequestHandle refreshDataFromServer(final JsonHttpResponseHandler parentHandler){
+        final ProgressDialog progressDialog = ProgressDialog.show(context, "Updating Schedule", "Opening");
         final List<Performance> existingFavorites = getExistingFavorites();
 
-        DatabaseHelper.getSharedService().clearDatabase();
-
-        Log.d(TAG, "Starting to download schedule");
-
-        final ProgressDialog progressDialog = ProgressDialog.show(context, "Updating Schedule", "Opening");
-
-
+        Log.d(TAG, "Making schedule fetch request");
         Header[] headers = new Header[0];
         final SharedPreferences sp = context.getSharedPreferences(SHARED_PREFERENCES_NAME, 0);
         String etag = sp.getString(LATEST_ETAG_KEY, null);
         if(etag != null){
-            Log.d(TAG, "Found ETag:" + etag);
+            Log.d(TAG, "Making request with ETag:" + etag);
             client.addHeader("If-None-Match", etag);
         }
 
-        client.get(DATA_JSON_URL, new JsonHttpResponseHandler(){
-
+        return client.get(context, DATA_JSON_URL, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, final JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
+                Log.d(TAG, "Download success");
                 if (statusCode == 304) {
                     //do nothing
-
                 } else {
+                    DatabaseHelper.getSharedService().clearDatabase();
+
                     //Check for and set eTag
-                    for(int i = 0; i < headers.length; i++){
+                    for (int i = 0; i < headers.length; i++) {
                         Header h = headers[i];
-                        if(h.getName().equalsIgnoreCase("ETag")){
+                        if (h.getName().equalsIgnoreCase("ETag")) {
                             Log.d(TAG, "Saving ETag:" + h.getValue());
                             SharedPreferences.Editor editor = sp.edit();
                             editor.putString(LATEST_ETAG_KEY, h.getValue());
@@ -109,6 +106,8 @@ public class DataService {
                         @Override
                         protected String doInBackground(JSONObject... obj) {
                             try {
+
+
                                 JSONObject data = obj[0].getJSONObject("data");
                                 publishProgress("First beats");
                                 processVenues(data.getJSONArray("Venues"));
@@ -161,17 +160,26 @@ public class DataService {
             }
 
             @Override
+            public void onSuccess(final int statusCode, final Header[] headers, final String responseBody) {
+                super.onSuccess(statusCode, headers, responseBody);
+            }
+
+            @Override
+            public void onFinish() {
+                super.onFinish();
+            }
+
+            @Override
             public void onFailure(int statusCode,
                                   org.apache.http.Header[] headers,
                                   java.lang.String responseBody,
                                   java.lang.Throwable e) {
                 super.onFailure(statusCode, headers, responseBody, e);
 
-                if(statusCode == 304) {
+                if (statusCode == 304) {
                     Log.d(TAG, "Schedule already up to date");
                     Toast.makeText(context, R.string.success_msg_schedule_up_to_date, Toast.LENGTH_LONG).show();
-                }
-                else {
+                } else {
                     Log.e(TAG, "Schedule failed to download", e);
                     Toast.makeText(context, R.string.error_msg_schedule_download, Toast.LENGTH_LONG).show();
                 }
