@@ -2,6 +2,7 @@ package com.ucbtheatre.dcm.app.data;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -29,6 +30,8 @@ public class DataService {
 
     private final static String TAG = "DataService";
     private final static String DATA_JSON_URL = "http://api.ucbcomedy.com/dcm?mode=development";
+    private static final String SHARED_PREFERENCES_NAME = "DCM_SHARED_PREFERENCES";
+    private static final String LATEST_ETAG_KEY = "LATEST_ETAG_KEY";
 
     //Static accessor
     private static DataService mSharedService;
@@ -50,11 +53,6 @@ public class DataService {
 
 
     public boolean shouldUpdate(){
-        try {
-            return DatabaseHelper.getSharedService().getVenueDAO().countOf() == 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         return true;
     }
 
@@ -78,10 +76,35 @@ public class DataService {
 
         final ProgressDialog progressDialog = ProgressDialog.show(context, "Updating Schedule", "Opening");
 
+
+        Header[] headers = new Header[0];
+        final SharedPreferences sp = context.getSharedPreferences(SHARED_PREFERENCES_NAME, 0);
+        String etag = sp.getString(LATEST_ETAG_KEY, null);
+        if(etag != null){
+            Log.d(TAG, "Found ETag:" + etag);
+            client.addHeader("If-None-Match", etag);
+        }
+
         client.get(DATA_JSON_URL, new JsonHttpResponseHandler(){
+
             @Override
-            public void onSuccess(final JSONObject response) {
-                super.onSuccess(response);
+            public void onSuccess(int statusCode, Header[] headers, final JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                if (statusCode == 304) {
+                    //do nothing
+
+                } else {
+                    //Check for and set eTag
+                    for(int i = 0; i < headers.length; i++){
+                        Header h = headers[i];
+                        if(h.getName().equalsIgnoreCase("ETag")){
+                            Log.d(TAG, "Saving ETag:" + h.getValue());
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.putString(LATEST_ETAG_KEY, h.getValue());
+                            editor.commit();
+                        }
+                    }
+
                     AsyncTask<JSONObject, String, String> updateSql = new AsyncTask<JSONObject, String, String>() {
                         @Override
                         protected String doInBackground(JSONObject... obj) {
@@ -94,9 +117,9 @@ public class DataService {
                                 publishProgress("Third beats");
                                 processSchedules(data.getJSONArray("Schedules"));
 
-                                for(Performance oldPerformance : existingFavorites){
+                                for (Performance oldPerformance : existingFavorites) {
                                     Performance newPerformance = DatabaseHelper.getSharedService().getPerformanceDAO().queryForId(oldPerformance.id);
-                                    if(newPerformance != null) {
+                                    if (newPerformance != null) {
                                         newPerformance.setIsFavorite(true);
                                         DatabaseHelper.getSharedService().getPerformanceDAO().update(newPerformance);
                                     }
@@ -127,13 +150,14 @@ public class DataService {
                             Log.d(TAG, "Schedule downloaded successfully");
                             progressDialog.hide();
 
-                            if(parentHandler != null){
+                            if (parentHandler != null) {
                                 parentHandler.onSuccess(response);
                             }
                         }
                     };
 
-                updateSql.execute(response);
+                    updateSql.execute(response);
+                }
             }
 
             @Override
@@ -142,12 +166,17 @@ public class DataService {
                                   java.lang.String responseBody,
                                   java.lang.Throwable e) {
                 super.onFailure(statusCode, headers, responseBody, e);
-                Log.e(TAG, "Schedule failed to download", e);
 
-                //TODO more specific?
-                Toast.makeText(context, R.string.error_msg_schedule_download, Toast.LENGTH_LONG).show();
+                if(statusCode == 304) {
+                    Log.d(TAG, "Schedule already up to date");
+                    Toast.makeText(context, R.string.success_msg_schedule_up_to_date, Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Log.e(TAG, "Schedule failed to download", e);
+                    Toast.makeText(context, R.string.error_msg_schedule_download, Toast.LENGTH_LONG).show();
+                }
+
                 progressDialog.hide();
-
                 parentHandler.onFailure(statusCode, headers, responseBody, e);
             }
         });
