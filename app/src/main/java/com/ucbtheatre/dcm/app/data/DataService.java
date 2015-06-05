@@ -28,7 +28,7 @@ import java.util.concurrent.Callable;
 public class DataService {
 
     private final static String TAG = "DataService";
-    private final static String DATA_JSON_URL = "http://api.production.ucbt.net/dcm";
+    private final static String DATA_JSON_URL = "http://api.ucbcomedy.com/dcm?mode=development";
 
     //Static accessor
     private static DataService mSharedService;

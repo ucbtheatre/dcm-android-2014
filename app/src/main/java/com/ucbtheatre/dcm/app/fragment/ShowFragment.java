@@ -25,6 +25,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.ucbtheatre.dcm.app.R;
 import com.ucbtheatre.dcm.app.data.DatabaseHelper;
 import com.ucbtheatre.dcm.app.data.Performance;
+import com.ucbtheatre.dcm.app.data.Performer;
 import com.ucbtheatre.dcm.app.data.Show;
 import com.ucbtheatre.dcm.app.data.Venue;
 import com.ucbtheatre.dcm.app.widget.RemoteImageView;
@@ -203,24 +204,28 @@ public class ShowFragment extends Fragment  {
 
     protected void createCastViews(View view) {
         LinearLayout castSection = (LinearLayout) view.findViewById(R.id.fragment_show_cast);
-        String[] cast = show.getPerformersArray();
+        List<Performer> cast = null;
 
-        if(cast.length > 0){
-            LayoutInflater inflater = getActivity().getLayoutInflater();
-            View headerView = inflater.inflate(R.layout.header_layout,castSection,false);
-            TextView headerText = (TextView) headerView.findViewById(R.id.header_text);
-            headerText.setText("Cast");
-            castSection.addView(headerView);
+        try {
+            cast = show.getPerformers();
+
+            if(cast.size() > 0){
+                LayoutInflater inflater = getActivity().getLayoutInflater();
+                View headerView = inflater.inflate(R.layout.header_layout,castSection,false);
+                TextView headerText = (TextView) headerView.findViewById(R.id.header_text);
+                headerText.setText("Cast");
+                castSection.addView(headerView);
+            }
+
+            for(int i = 0; i < cast.size(); i++){
+                TextView castView = new TextView(getActivity());
+                castView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                castView.setText(cast.get(i).toString());
+                castView.setTextSize(18);
+                castSection.addView(castView);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        for(int i = 0; i < cast.length; i++){
-            TextView castView = new TextView(getActivity());
-            castView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            castView.setText(cast[i]);
-            castView.setTextSize(18);
-            castSection.addView(castView);
-        }
-
-        //50.63.202.26
     }
 }

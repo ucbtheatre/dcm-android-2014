@@ -22,10 +22,10 @@ public class Performer implements Serializable {
 
     public Performer() {}
 
-    public Performer(JSONObject json){
-        firstName = json.optString("first","");
-        lastName = json.optString("last", "");
-        id = this.toString().hashCode();
+    public Performer(String performerId, String firstName, String lastName) {
+        this.id = Integer.parseInt(performerId);
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     @Override

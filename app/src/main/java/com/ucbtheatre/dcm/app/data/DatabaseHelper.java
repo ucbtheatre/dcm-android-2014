@@ -25,6 +25,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     //Static accessor
     private static DatabaseHelper mSharedService;
+
+
     public static DatabaseHelper getSharedService()
     {
         return mSharedService;
@@ -43,7 +45,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private Dao<Show, Integer> showDAO;
     private Dao<Performance, Integer> performanceDAO;
     private Dao<Performer, Integer> performerDAO;
-
+    private Dao<ShowPerformer, Integer> showPerformerDAO;
 
     //Constructor and creation
     public DatabaseHelper(Context context) {
@@ -59,6 +61,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Show.class);
             TableUtils.createTable(connectionSource, Performance.class);
             TableUtils.createTable(connectionSource, Performer.class);
+            TableUtils.createTable(connectionSource, ShowPerformer.class);
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
@@ -73,6 +76,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public void clearDatabase(){
         try {
             Log.i(DatabaseHelper.class.getName(), "onUpgrade");
+            TableUtils.dropTable(connectionSource, ShowPerformer.class, true);
             TableUtils.dropTable(connectionSource, Venue.class, true);
             TableUtils.dropTable(connectionSource, Show.class, true);
             TableUtils.dropTable(connectionSource, Performance.class, true);
@@ -127,6 +131,17 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             }
         }
         return performerDAO;
+    }
+
+    public Dao<ShowPerformer, Integer> getShowPerformerDAO() {
+        if (showPerformerDAO == null) {
+            try {
+                showPerformerDAO = getDao(ShowPerformer.class);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return showPerformerDAO;
     }
 
     @Override
