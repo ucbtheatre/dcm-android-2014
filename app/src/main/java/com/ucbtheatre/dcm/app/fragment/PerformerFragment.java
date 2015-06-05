@@ -43,7 +43,7 @@ public class PerformerFragment extends NavigableFragment {
         performer = (Performer) getArguments().getSerializable(EXTRA_PERFORMER);
         try {
             SelectArg name = new SelectArg("%" +performer.toString()+ "%");
-            shows = DatabaseHelper.getSharedService().getShowDAO().queryBuilder().where().like("performers", name).query();
+            shows = performer.getShows();
         } catch (SQLException e) {
             e.printStackTrace();
         }

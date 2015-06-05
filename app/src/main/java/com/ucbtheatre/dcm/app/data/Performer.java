@@ -1,10 +1,14 @@
 package com.ucbtheatre.dcm.app.data;
 
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
 
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created by kurtguenther.
@@ -31,5 +35,17 @@ public class Performer implements Serializable {
     @Override
     public String toString() {
         return firstName + " " + lastName;
+    }
+
+    public List<Show> getShows() throws SQLException {
+
+        QueryBuilder<ShowPerformer, Integer> userPostQb = DatabaseHelper.getSharedService().getShowPerformerDAO().queryBuilder();
+        userPostQb.selectColumns(ShowPerformer.SHOW_ID_FIELD_NAME);
+        userPostQb.where().eq(ShowPerformer.PERFORMER_ID_FIELD_NAME, this);
+        QueryBuilder<Show, Integer> postQb = DatabaseHelper.getSharedService().getShowDAO().queryBuilder();
+        postQb.where().in("id", userPostQb);
+        PreparedQuery<Show> query = postQb.prepare();
+
+        return DatabaseHelper.getSharedService().getShowDAO().query(query);
     }
 }

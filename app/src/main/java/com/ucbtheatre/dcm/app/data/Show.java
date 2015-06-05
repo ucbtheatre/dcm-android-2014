@@ -148,41 +148,6 @@ public class Show implements Serializable {
         return DatabaseHelper.getSharedService().getPerformerDAO().query(query);
     }
 
-//    /**
-//     * Build our query for Post objects that match a User.
-//     */
-//    private PreparedQuery<Post> makePostsForUserQuery() throws SQLException {
-//        // build our inner query for UserPost objects
-//        QueryBuilder<UserPost, Integer> userPostQb = userPostDao.queryBuilder();
-//        // just select the post-id field
-//        userPostQb.selectColumns(UserPost.POST_ID_FIELD_NAME);
-//        SelectArg userSelectArg = new SelectArg();
-//        // you could also just pass in user1 here
-//        userPostQb.where().eq(UserPost.USER_ID_FIELD_NAME, userSelectArg);
-//
-//        // build our outer query for Post objects
-//        QueryBuilder<Post, Integer> postQb = postDao.queryBuilder();
-//        // where the id matches in the post-id from the inner query
-//        postQb.where().in(Post.ID_FIELD_NAME, userPostQb);
-//        return postQb.prepare();
-//    }
-//
-//    private List<Post> lookupPostsForUser(User user) throws SQLException {
-//        if (postsForUserQuery == null) {
-//            postsForUserQuery = makePostsForUserQuery();
-//        }
-//        postsForUserQuery.setArgumentHolderValue(0, user);
-//        return postDao.query(postsForUserQuery);
-//    }
-//
-//
-//
-//    /**
-//     * Build our query for Post objects that match a User.
-//     */
-//    private PreparedQuery<Post> makePostsForUserQuery() throws SQLException {
-//
-//    }
 
     @Override
     public String toString() {
