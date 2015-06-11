@@ -281,6 +281,13 @@ public class ShowsListFragment extends Fragment {
 
         @Override
         public int getSectionForPosition(int position) {
+            //Hack: not quite sure why we need this here
+            //but it was causing index out of bounds exceptions
+            //I think it's because the list radically changes in size quickly
+            //And the quick scroll menu comes up randomly
+            if(position >= getCount()) {
+                position = 0;
+            }
             Show p = getItem(position);
             return indexes.indexOf(getHeaderString(p));
         }

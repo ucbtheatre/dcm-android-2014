@@ -33,6 +33,7 @@ import com.ucbtheatre.dcm.app.fragment.NavigationFragment;
 import com.ucbtheatre.dcm.app.fragment.NowFragment;
 import com.ucbtheatre.dcm.app.fragment.ShowFragment;
 import com.ucbtheatre.dcm.app.fragment.ShowsListFragment;
+import com.ucbtheatre.dcm.app.fragment.SocialFragment;
 import com.ucbtheatre.dcm.app.fragment.VenuesListFragment;
 
 import org.json.JSONObject;
@@ -96,10 +97,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             // the adapter. Also specify this Activity object, which implements
             // the TabListener interface, as the callback (listener) for when
             // this tab is selected.
-            actionBar.addTab(
-                    actionBar.newTab()
-                            .setText(mSectionsPagerAdapter.getPageTitle(i))
-                            .setTabListener(this));
+            ActionBar.Tab tab = actionBar.newTab()
+                    .setText(mSectionsPagerAdapter.getPageTitle(i))
+                    .setTabListener(this);
+            actionBar.addTab(tab);
         }
 
         //Hack: not sure why I need to delay the call here
@@ -188,7 +189,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 getResources().getString(R.string.title_section_now),
                 getResources().getString(R.string.title_section_shows),
                 getResources().getString(R.string.title_section_venues),
-                getResources().getString(R.string.title_section_favorites)};
+                getResources().getString(R.string.title_section_favorites),
+                "#DCM17"
+        };
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -208,6 +211,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 }
                 case 3: {
                     return new FavoritesFragment();
+                }
+                case 4: {
+                    return new SocialFragment();
                 }
             }
             return null;

@@ -2,7 +2,11 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <item name="android:actionBarTabTextStyle">@style/Widget.MyTabText</item>
+    </style>
 
+    <style name="Widget.MyTabText" parent="android:Widget.Holo.Light.ActionBar.TabText.Inverse">
+        <item name="android:textSize">12dp</item>
     </style>
 
 </resources>

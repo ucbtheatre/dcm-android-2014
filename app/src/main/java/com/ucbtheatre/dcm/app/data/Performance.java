@@ -43,6 +43,9 @@ public class Performance implements Serializable {
     @DatabaseField
     private boolean isFavorite;
 
+    @DatabaseField
+    public String ticketsUrl;
+
     public Performance(){ }
 
     public Performance(JSONObject json) throws JSONException{
@@ -64,6 +67,7 @@ public class Performance implements Serializable {
         start_date = json.getInt("starttime");
         end_date = json.getInt("endtime");
         minutes = json.getInt("minutes");
+        ticketsUrl = json.optString("tickets");
     }
 
     @Override

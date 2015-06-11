@@ -70,6 +70,12 @@
                 android:id="@+id/fragment_show_cast"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:orientation="vertical"/>
+            <LinearLayout
+                android:id="@+id/fragment_show_tickets"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"/>
         </LinearLayout>
     </ScrollView>

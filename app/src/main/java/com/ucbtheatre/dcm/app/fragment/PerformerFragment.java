@@ -40,8 +40,6 @@ public class PerformerFragment extends Fragment {
 
     public PerformerFragment() {}
 
-    ListView listView;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -58,7 +56,7 @@ public class PerformerFragment extends Fragment {
         TextView name = (TextView) retVal.findViewById(R.id.fragment_performer_title);
         name.setText(performer.toString());
 
-        listView = (ListView) retVal.findViewById(R.id.fragment_performer_shows_list);
+        ListView listView = (ListView) retVal.findViewById(R.id.fragment_performer_shows_list);
         RemoteImageView photo = new RemoteImageView(getActivity());
         photo.loadURL(performer.getPhotoUrl());
         photo.setLayoutParams(new ListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));

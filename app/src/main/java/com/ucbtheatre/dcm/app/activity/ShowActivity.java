@@ -3,7 +3,7 @@ package com.ucbtheatre.dcm.app.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -43,7 +44,6 @@ public class ShowActivity extends Activity {
         show = (Show) getIntent().getSerializableExtra(ShowFragment.EXTRA_SHOW);
         setContentView(R.layout.activity_show);
 
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_left);
 
         performances = new ArrayList<Performance>();
@@ -134,6 +134,7 @@ public class ShowActivity extends Activity {
         createImage(this.findViewById(android.R.id.content));
         createShowViews(this.findViewById(android.R.id.content));
         createCastViews(this.findViewById(android.R.id.content));
+        createTicketViews(this.findViewById(android.R.id.content));
 
     }
 
@@ -204,6 +205,49 @@ public class ShowActivity extends Activity {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    protected void createTicketViews(View view) {
+
+        boolean isPaidShow = false;
+        for(Performance p : performances){
+            if(p.ticketsUrl != null && !p.ticketsUrl.isEmpty()){
+                isPaidShow = true;
+            }
+        }
+
+        //No paid shows, no views
+        if(!isPaidShow){
+            return;
+        }
+
+        LinearLayout ticketsSection = (LinearLayout) view.findViewById(R.id.fragment_show_tickets);
+
+        LayoutInflater inflater = getLayoutInflater();
+        View headerView = inflater.inflate(R.layout.header_layout,ticketsSection,false);
+        TextView headerText = (TextView) headerView.findViewById(R.id.header_text);
+        headerText.setText("Tickets");
+        ticketsSection.addView(headerView);
+
+        for(int i = 0; i < performances.size(); i++){
+            final Performance p = performances.get(i);
+            Button buyTicketsButton = new Button(this);
+            buyTicketsButton.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            if(performances.size() > 1) {
+                buyTicketsButton.setText("Buy a ticket - " + p.getStartTime());
+            } else {
+                buyTicketsButton.setText("Buy a ticket");
+            }
+            buyTicketsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent buyIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(p.ticketsUrl));
+                    startActivity(buyIntent);
+                }
+            });
+            buyTicketsButton.setTextSize(18);
+            ticketsSection.addView(buyTicketsButton);
         }
     }
 

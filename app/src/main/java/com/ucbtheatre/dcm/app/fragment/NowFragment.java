@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.ucbtheatre.dcm.app.R;
+import com.ucbtheatre.dcm.app.activity.ShowActivity;
 import com.ucbtheatre.dcm.app.data.DatabaseHelper;
 import com.ucbtheatre.dcm.app.data.Performance;
 import com.ucbtheatre.dcm.app.data.Venue;
@@ -86,14 +87,10 @@ public class NowFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-//                Performance perf = (Performance) adapterView.getItemAtPosition(position);
-//
-//                ShowFragment showFragment= new ShowFragment();
-//                Bundle dataBundle = new Bundle();
-//                dataBundle.putSerializable(ShowFragment.EXTRA_SHOW, perf.show);
-//                showFragment.setArguments(dataBundle);
-//
-//                navigationFragment.pushFragment(showFragment);
+                Performance perf = (Performance) adapterView.getItemAtPosition(position);
+                Intent showIntent = new Intent(getActivity(), ShowActivity.class);
+                showIntent.putExtra(ShowFragment.EXTRA_SHOW, perf.show);
+                startActivity(showIntent);
             }
         });
 
