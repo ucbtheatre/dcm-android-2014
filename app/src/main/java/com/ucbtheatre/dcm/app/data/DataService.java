@@ -57,6 +57,15 @@ public class DataService {
         return true;
     }
 
+    public boolean isSilent() {
+        try {
+            return DatabaseHelper.getSharedService().getPerformanceDAO().queryForAll().size() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
     protected List<Performance> getExistingFavorites(){
         List<Performance> retVal = new ArrayList<Performance>();
@@ -68,15 +77,25 @@ public class DataService {
         return retVal;
     }
 
-    public RequestHandle refreshDataFromServer(final JsonHttpResponseHandler parentHandler){
-        final ProgressDialog progressDialog = ProgressDialog.show(context, "Updating Schedule", "Opening");
+    public RequestHandle refreshDataFromServer(boolean force, final JsonHttpResponseHandler parentHandler){
+        final ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle("Updating Schedule");
+        progressDialog.setMessage("Opening");
+
+        //If we already have a database, we make it silent
+        if(!isSilent() || force){
+            progressDialog.show();
+        }
+
         final List<Performance> existingFavorites = getExistingFavorites();
 
         Log.d(TAG, "Making schedule fetch request");
         Header[] headers = new Header[0];
         final SharedPreferences sp = context.getSharedPreferences(SHARED_PREFERENCES_NAME, 0);
         String etag = sp.getString(LATEST_ETAG_KEY, null);
-        if(etag != null){
+
+        client.removeHeader("If-None-Match");
+        if(!force && etag != null){
             Log.d(TAG, "Making request with ETag:" + etag);
             client.addHeader("If-None-Match", etag);
         }

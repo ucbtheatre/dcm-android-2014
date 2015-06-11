@@ -7,10 +7,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -35,7 +38,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
  * A simple {@link android.support.v4.app.Fragment} subclass.
  *
  */
-public class FavoritesFragment extends NavigableFragment {
+public class FavoritesFragment extends Fragment {
 
     StickyListHeadersListView listView;
     View emptyView;
@@ -54,11 +57,16 @@ public class FavoritesFragment extends NavigableFragment {
                 refreshData();
             }
         }, filter);
+
+        setHasOptionsMenu(true);
+
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View retVal = inflater.inflate(R.layout.fragment_favorites, container, false);
+        retVal.setBackgroundColor(Color.WHITE);
 
         emptyView = retVal.findViewById(android.R.id.empty);
 

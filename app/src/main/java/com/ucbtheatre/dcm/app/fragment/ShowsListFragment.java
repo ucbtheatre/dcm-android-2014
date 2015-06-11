@@ -48,7 +48,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class ShowsListFragment extends NavigableFragment {
+public class ShowsListFragment extends Fragment {
 
 
     public StickyListHeadersListView listView;
@@ -133,6 +133,8 @@ public class ShowsListFragment extends NavigableFragment {
             listView.setFastScrollEnabled(true);
         }
 
+        setHasOptionsMenu(true);
+
         return retVal;
     }
 
@@ -151,7 +153,6 @@ public class ShowsListFragment extends NavigableFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        navigationFragment = null;
     }
 
 

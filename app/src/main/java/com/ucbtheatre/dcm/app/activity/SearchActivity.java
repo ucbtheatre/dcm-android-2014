@@ -174,19 +174,10 @@ public class SearchActivity extends FragmentActivity implements ActionBar.TabLis
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position){
                 case 0: {
-                    NavigationFragment retVal = new NavigationFragment();
-
-                    retVal.setRootFragment(showsFragment);
-                    showsFragment.setNavigationFragment(retVal);
-                    return retVal;
+                    return showsFragment;
                 }
                 case 1: {
-
-                    NavigationFragment retVal = new NavigationFragment();
-
-                    retVal.setRootFragment(performersFragment);
-                    performersFragment.setNavigationFragment(retVal);
-                    return retVal;
+                    return performersFragment;
                 }
             }
             return null;

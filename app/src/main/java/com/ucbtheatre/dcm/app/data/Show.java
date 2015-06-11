@@ -148,8 +148,10 @@ public class Show implements Serializable {
         return DatabaseHelper.getSharedService().getPerformerDAO().query(query);
     }
 
-    public boolean isCleaning(){
-        return name.toLowerCase().contains("theatre cleaning");
+
+    public boolean isNotRealShow(){
+        return name.toLowerCase().contains("theatre cleaning") ||
+            name.toLowerCase().contains("@dcm_lines");
     }
 
     @Override

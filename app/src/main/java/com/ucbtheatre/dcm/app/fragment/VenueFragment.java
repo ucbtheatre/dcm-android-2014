@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ucbtheatre.dcm.app.R;
+import com.ucbtheatre.dcm.app.activity.ShowActivity;
 import com.ucbtheatre.dcm.app.data.DatabaseHelper;
 import com.ucbtheatre.dcm.app.data.Performance;
 import com.ucbtheatre.dcm.app.data.Show;
@@ -41,7 +42,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
  * create an instance of this fragment.
  *
  */
-public class VenueFragment extends NavigableFragment implements Serializable {
+public class VenueFragment extends Fragment implements Serializable {
 
     public static final String EXTRA_VENUE = "com.ucbtheatre.dcm.app.extra-venue";
 
@@ -64,7 +65,7 @@ public class VenueFragment extends NavigableFragment implements Serializable {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        venue = (Venue) getArguments().getSerializable(EXTRA_VENUE);
+        venue = (Venue) getActivity().getIntent().getSerializableExtra(EXTRA_VENUE);
 
         performances = new ArrayList<Performance>();
 
@@ -88,13 +89,10 @@ public class VenueFragment extends NavigableFragment implements Serializable {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Performance perf = (Performance) adapterView.getItemAtPosition(position);
 
-                if(!perf.show.isCleaning()) {
-                    ShowFragment showFragment = new ShowFragment();
-                    Bundle dataBundle = new Bundle();
-                    dataBundle.putSerializable(ShowFragment.EXTRA_SHOW, perf.show);
-                    showFragment.setArguments(dataBundle);
-
-                    navigationFragment.pushFragment(showFragment);
+                if(!perf.show.isNotRealShow()) {
+                    Intent showIntent = new Intent(getActivity(), ShowActivity.class);
+                    showIntent.putExtra(ShowFragment.EXTRA_SHOW, perf.show);
+                    startActivity(showIntent);
                 }
             }
         });
@@ -105,7 +103,7 @@ public class VenueFragment extends NavigableFragment implements Serializable {
                 Performance perf = (Performance) adapterView.getItemAtPosition(position);
 
                 Show show = perf.show;
-                if(!show.isCleaning()) {
+                if(!show.isNotRealShow()) {
                     boolean newFavoriteValue = !show.getIsFavorite();
                     show.setIsFavorite(newFavoriteValue);
 
@@ -116,7 +114,7 @@ public class VenueFragment extends NavigableFragment implements Serializable {
                     }
                 }
 
-                return !show.isCleaning();
+                return !show.isNotRealShow();
             }
         });
 
@@ -124,14 +122,8 @@ public class VenueFragment extends NavigableFragment implements Serializable {
         title = (TextView) getView().findViewById(R.id.fragment_venue_title);
         title.setText(venue.name);
 
-        ImageButton mapButton = (ImageButton) getView().findViewById(R.id.fragment_venue_map);
-        mapButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(venue.gmaps));
-                startActivity(mapIntent);
-            }
-        });
+        TextView address = (TextView) getView().findViewById(R.id.fragment_venue_address);
+        address.setText(venue.address);
     }
 
     protected void refreshData() {
@@ -202,7 +194,7 @@ public class VenueFragment extends NavigableFragment implements Serializable {
             }
 
             //Handle theatre cleanings
-            if(performances.get(position).show.isCleaning()){
+            if(performances.get(position).show.isNotRealShow()){
                 holder.showTitle.setTextColor(Color.WHITE);
                 holder.time.setTextColor(Color.WHITE);
                 convertView.setBackgroundColor(getResources().getColor(R.color.theatre_cleaning_background));

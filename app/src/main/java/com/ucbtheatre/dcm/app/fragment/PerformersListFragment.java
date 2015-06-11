@@ -1,8 +1,10 @@
 package com.ucbtheatre.dcm.app.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.ucbtheatre.dcm.app.R;
+import com.ucbtheatre.dcm.app.activity.PerformerActivity;
 import com.ucbtheatre.dcm.app.data.DatabaseHelper;
 import com.ucbtheatre.dcm.app.data.Performance;
 import com.ucbtheatre.dcm.app.data.Performer;
@@ -29,7 +32,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 /**
  * Created by kurtguenther.
  */
-public class PerformersListFragment extends NavigableFragment {
+public class PerformersListFragment extends Fragment {
 
     protected String mSearchString = "";
 
@@ -57,18 +60,14 @@ public class PerformersListFragment extends NavigableFragment {
 
         listView.setAdapter(new PerformersListAdapter(getActivity(), 0));
 
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Performer perf = (Performer) adapterView.getItemAtPosition(position);
-
-                PerformerFragment performerFragment= new PerformerFragment();
-                Bundle dataBundle = new Bundle();
-                dataBundle.putSerializable(PerformerFragment.EXTRA_PERFORMER, perf);
-                performerFragment.setArguments(dataBundle);
-                performerFragment.setNavigationFragment(navigationFragment);
-
-                navigationFragment.pushFragment(performerFragment);
+                Intent perfIntent = new Intent(getActivity(), PerformerActivity.class);
+                perfIntent.putExtra(PerformerFragment.EXTRA_PERFORMER, perf);
+                startActivity(perfIntent);
             }
         });
 
@@ -86,7 +85,6 @@ public class PerformersListFragment extends NavigableFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        navigationFragment = null;
     }
 
     public void refreshData() {

@@ -3,6 +3,7 @@ package com.ucbtheatre.dcm.app.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -42,6 +43,7 @@ public class ShowActivity extends Activity {
         show = (Show) getIntent().getSerializableExtra(ShowFragment.EXTRA_SHOW);
         setContentView(R.layout.activity_show);
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_left);
 
         performances = new ArrayList<Performance>();

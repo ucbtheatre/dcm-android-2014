@@ -30,5 +30,8 @@
     <string name="toast_favorite_removed">Favorite Removed</string>
     <string name="credit_names">With help from:\n*Cody Snider\n*Andy Nagel</string>
     <string name="title_activity_show">Show</string>
+    <string name="menu_map">map</string>
+    <string name="title_activity_venue">Venue</string>
+    <string name="title_activity_performer">Performer</string>
 
 </resources>

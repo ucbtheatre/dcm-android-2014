@@ -111,7 +111,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             public void run() {
                 if(DataService.getSharedService().shouldUpdate()){
                     Log.d(MainActivity.class.getName(), "Refreshing data");
-                    DataService.getSharedService().refreshDataFromServer(new JsonHttpResponseHandler(){
+                    DataService.getSharedService().refreshDataFromServer(false, new JsonHttpResponseHandler(){
                         @Override
                         public void onSuccess(JSONObject response) {
                             super.onSuccess(response);
@@ -128,7 +128,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -139,7 +138,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         int id = item.getItemId();
         if (id == R.id.menu_main_refresh) {
             Log.d(MainActivity.class.getName(), "Refreshing data");
-            DataService.getSharedService().refreshDataFromServer(new JsonHttpResponseHandler(){
+            DataService.getSharedService().refreshDataFromServer(true, new JsonHttpResponseHandler(){
                 @Override
                 public void onSuccess(JSONObject response) {
                     super.onSuccess(response);
@@ -199,36 +198,16 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         public Fragment getItem(int position) {
             switch (position){
                 case 0: {
-                    NowFragment list = new NowFragment();
-                    NavigationFragment retVal = new NavigationFragment();
-
-                    retVal.setRootFragment(list);
-                    list.setNavigationFragment(retVal);
-                    return retVal;
+                    return new NowFragment();
                 }
                 case 1: {
-                    ShowsListFragment list = new ShowsListFragment();
-                    NavigationFragment retVal = new NavigationFragment();
-
-                    retVal.setRootFragment(list);
-                    list.setNavigationFragment(retVal);
-                    return retVal;
+                    return new ShowsListFragment();
                 }
                 case 2: {
-                    VenuesListFragment list = new VenuesListFragment();
-                    NavigationFragment retVal = new NavigationFragment();
-
-                    retVal.setRootFragment(list);
-                    list.setNavigationFragment(retVal);
-                    return retVal;
+                    return new VenuesListFragment();
                 }
                 case 3: {
-                    FavoritesFragment list = new FavoritesFragment();
-                    NavigationFragment retVal = new NavigationFragment();
-
-                    retVal.setRootFragment(list);
-                    list.setNavigationFragment(retVal);
-                    return retVal;
+                    return new FavoritesFragment();
                 }
             }
             return null;

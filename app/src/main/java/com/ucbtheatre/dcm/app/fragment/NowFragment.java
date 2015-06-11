@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -34,7 +36,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
  * A simple {@link android.support.v4.app.Fragment} subclass.
  *
  */
-public class NowFragment extends NavigableFragment {
+public class NowFragment extends Fragment {
 
     //June 27, 2014, 4 PM EST, pulled from http://www.unixtimestamp.com/ and then EST corrected
     public static final Date MARATHON_START_DATE = new Date(((long)1435334400 + 4*60*60) * 1000);
@@ -84,16 +86,18 @@ public class NowFragment extends NavigableFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Performance perf = (Performance) adapterView.getItemAtPosition(position);
-
-                ShowFragment showFragment= new ShowFragment();
-                Bundle dataBundle = new Bundle();
-                dataBundle.putSerializable(ShowFragment.EXTRA_SHOW, perf.show);
-                showFragment.setArguments(dataBundle);
-
-                navigationFragment.pushFragment(showFragment);
+//                Performance perf = (Performance) adapterView.getItemAtPosition(position);
+//
+//                ShowFragment showFragment= new ShowFragment();
+//                Bundle dataBundle = new Bundle();
+//                dataBundle.putSerializable(ShowFragment.EXTRA_SHOW, perf.show);
+//                showFragment.setArguments(dataBundle);
+//
+//                navigationFragment.pushFragment(showFragment);
             }
         });
+
+        setHasOptionsMenu(true);
 
         return retVal;
     }

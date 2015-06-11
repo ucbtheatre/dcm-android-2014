@@ -7,6 +7,8 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -47,5 +49,14 @@ public class Performer implements Serializable {
         PreparedQuery<Show> query = postQb.prepare();
 
         return DatabaseHelper.getSharedService().getShowDAO().query(query);
+    }
+
+    public URL getPhotoUrl(){
+        try {
+            return new URL("http://2292774aeb57f699998f-7c1ee3a3cf06785b3e2b618873b759ef.r47.cf5.rackcdn.com/person_" + id + ".png");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

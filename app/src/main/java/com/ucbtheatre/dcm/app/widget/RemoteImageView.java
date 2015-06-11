@@ -111,6 +111,7 @@ public class RemoteImageView extends ImageView {
             public void onLoadingFailed(String s, View view, FailReason failReason) {
                 stopSpinnerAnimation();
                 setVisibility(GONE);
+                setMaxHeight(0);
                 invalidate();
             }
 

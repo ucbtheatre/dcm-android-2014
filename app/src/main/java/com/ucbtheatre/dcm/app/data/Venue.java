@@ -31,6 +31,12 @@ public class Venue implements Serializable {
     public String image;
 
     @DatabaseField
+    public double lat;
+
+    @DatabaseField
+    public double lng;
+
+    @DatabaseField
     public String gmaps;
 
     @DatabaseField
@@ -45,6 +51,8 @@ public class Venue implements Serializable {
         address = json.optString("address");
         image = json.optString("image");
         url = json.optString("url");
+        lat = json.optDouble("lat");
+        lng = json.optDouble("lng");
         gmaps = json.optString("map_url");
     }
 
