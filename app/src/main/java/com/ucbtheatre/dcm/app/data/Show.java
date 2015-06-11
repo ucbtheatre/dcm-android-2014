@@ -148,6 +148,9 @@ public class Show implements Serializable {
         return DatabaseHelper.getSharedService().getPerformerDAO().query(query);
     }
 
+    public boolean isCleaning(){
+        return name.toLowerCase().contains("theatre cleaning");
+    }
 
     @Override
     public String toString() {

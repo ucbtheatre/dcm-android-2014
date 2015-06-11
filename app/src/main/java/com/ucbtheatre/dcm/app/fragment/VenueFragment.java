@@ -88,12 +88,14 @@ public class VenueFragment extends NavigableFragment implements Serializable {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Performance perf = (Performance) adapterView.getItemAtPosition(position);
 
-                ShowFragment showFragment= new ShowFragment();
-                Bundle dataBundle = new Bundle();
-                dataBundle.putSerializable(ShowFragment.EXTRA_SHOW, perf.show);
-                showFragment.setArguments(dataBundle);
+                if(!perf.show.isCleaning()) {
+                    ShowFragment showFragment = new ShowFragment();
+                    Bundle dataBundle = new Bundle();
+                    dataBundle.putSerializable(ShowFragment.EXTRA_SHOW, perf.show);
+                    showFragment.setArguments(dataBundle);
 
-                navigationFragment.pushFragment(showFragment);
+                    navigationFragment.pushFragment(showFragment);
+                }
             }
         });
 
@@ -103,16 +105,18 @@ public class VenueFragment extends NavigableFragment implements Serializable {
                 Performance perf = (Performance) adapterView.getItemAtPosition(position);
 
                 Show show = perf.show;
-                boolean newFavoriteValue = !show.getIsFavorite();
-                show.setIsFavorite(newFavoriteValue);
+                if(!show.isCleaning()) {
+                    boolean newFavoriteValue = !show.getIsFavorite();
+                    show.setIsFavorite(newFavoriteValue);
 
-                if(newFavoriteValue) {
-                    Toast.makeText(getActivity(), getResources().getString(R.string.toast_favorite_added), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getActivity(), getResources().getString(R.string.toast_favorite_removed), Toast.LENGTH_SHORT).show();
+                    if (newFavoriteValue) {
+                        Toast.makeText(getActivity(), getResources().getString(R.string.toast_favorite_added), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getActivity(), getResources().getString(R.string.toast_favorite_removed), Toast.LENGTH_SHORT).show();
+                    }
                 }
 
-                return true;
+                return !show.isCleaning();
             }
         });
 
@@ -196,6 +200,18 @@ public class VenueFragment extends NavigableFragment implements Serializable {
             } else {
                 convertView.setBackgroundColor(Color.TRANSPARENT);
             }
+
+            //Handle theatre cleanings
+            if(performances.get(position).show.isCleaning()){
+                holder.showTitle.setTextColor(Color.WHITE);
+                holder.time.setTextColor(Color.WHITE);
+                convertView.setBackgroundColor(getResources().getColor(R.color.theatre_cleaning_background));
+            } else {
+                holder.showTitle.setTextColor(Color.BLACK);
+                holder.time.setTextColor(Color.BLACK);
+                convertView.setBackgroundColor(Color.TRANSPARENT);
+            }
+
 
             return convertView;
         }

@@ -2,6 +2,7 @@ package com.ucbtheatre.dcm.app.fragment;
 
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.j256.ormlite.stmt.SelectArg;
 import com.ucbtheatre.dcm.app.R;
+import com.ucbtheatre.dcm.app.activity.ShowActivity;
 import com.ucbtheatre.dcm.app.data.DatabaseHelper;
 import com.ucbtheatre.dcm.app.data.Performer;
 import com.ucbtheatre.dcm.app.data.Show;
@@ -58,14 +60,9 @@ public class PerformerFragment extends NavigableFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Show show = (Show) adapterView.getAdapter().getItem(position);
-                if(navigationFragment != null){
-                    ShowFragment showFragment = new ShowFragment();
-                    Bundle dataBundle = new Bundle();
-                    dataBundle.putSerializable(ShowFragment.EXTRA_SHOW, show);
-                    showFragment.setArguments(dataBundle);
-
-                    navigationFragment.pushFragment(showFragment);
-                }
+                Intent showIntent = new Intent(getActivity(), ShowActivity.class);
+                showIntent.putExtra(ShowFragment.EXTRA_SHOW, show);
+                startActivity(showIntent);
             }
         });
 

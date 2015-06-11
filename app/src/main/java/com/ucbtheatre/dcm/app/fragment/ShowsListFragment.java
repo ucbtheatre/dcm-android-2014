@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.ucbtheatre.dcm.app.R;
 
 import com.ucbtheatre.dcm.app.activity.MainActivity;
+import com.ucbtheatre.dcm.app.activity.ShowActivity;
 import com.ucbtheatre.dcm.app.data.DatabaseHelper;
 import com.ucbtheatre.dcm.app.data.Performance;
 import com.ucbtheatre.dcm.app.data.Show;
@@ -66,14 +67,18 @@ public class ShowsListFragment extends NavigableFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Show show = (Show) adapterView.getAdapter().getItem(position);
-                if (navigationFragment != null) {
-                    ShowFragment showFragment = new ShowFragment();
-                    Bundle dataBundle = new Bundle();
-                    dataBundle.putSerializable(ShowFragment.EXTRA_SHOW, show);
-                    showFragment.setArguments(dataBundle);
 
-                    navigationFragment.pushFragment(showFragment);
-                }
+                Intent showIntent = new Intent(getActivity(), ShowActivity.class);
+                showIntent.putExtra(ShowFragment.EXTRA_SHOW, show);
+                startActivity(showIntent);
+//                if (navigationFragment != null) {
+//                    ShowFragment showFragment = new ShowFragment();
+//                    Bundle dataBundle = new Bundle();
+//                    dataBundle.putSerializable(ShowFragment.EXTRA_SHOW, show);
+//                    showFragment.setArguments(dataBundle);
+//
+//                    navigationFragment.pushFragment(showFragment);
+//                }
             }
         });
 
@@ -167,6 +172,8 @@ public class ShowsListFragment extends NavigableFragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder holder;
 
+            Show show = getItem(position);
+
             if (convertView == null) {
                 holder = new ViewHolder();
                 convertView = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
@@ -176,14 +183,16 @@ public class ShowsListFragment extends NavigableFragment {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            holder.text.setText(getItem(position).toString());
+            holder.text.setText(show.toString());
 
             //set the background based on favorite status
-            if(getItem(position).getIsFavorite()) {
+            if(show.getIsFavorite()) {
                 convertView.setBackgroundColor(getResources().getColor(R.color.favorite_background));
             } else {
                 convertView.setBackgroundColor(Color.TRANSPARENT);
             }
+
+
 
             return convertView;
         }

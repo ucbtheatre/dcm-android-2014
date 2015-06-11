@@ -165,11 +165,6 @@ public class DataService {
             }
 
             @Override
-            public void onFinish() {
-                super.onFinish();
-            }
-
-            @Override
             public void onFailure(int statusCode,
                                   org.apache.http.Header[] headers,
                                   java.lang.String responseBody,
