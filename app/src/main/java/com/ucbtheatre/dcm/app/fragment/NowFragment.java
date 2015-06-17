@@ -148,7 +148,7 @@ public class NowFragment extends Fragment {
 
         List<Venue> venues = null;
         try {
-            venues = DatabaseHelper.getSharedService().getVenueDAO().queryBuilder().orderBy("name",true).query();
+            venues = DatabaseHelper.getSharedService().getVenueDAO().queryBuilder().orderBy("name",false).query();
 
             Date now = new Date();
             long nowSeconds = now.getTime() / (long) 1000;

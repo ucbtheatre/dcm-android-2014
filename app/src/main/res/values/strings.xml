@@ -33,5 +33,6 @@
     <string name="menu_map">map</string>
     <string name="title_activity_venue">Venue</string>
     <string name="title_activity_performer">Performer</string>
+    <string name="success_schedule_updated">Schedule updated.</string>
 
 </resources>

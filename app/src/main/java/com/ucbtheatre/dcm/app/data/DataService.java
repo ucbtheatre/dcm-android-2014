@@ -30,7 +30,7 @@ import java.util.concurrent.Callable;
 public class DataService {
 
     private final static String TAG = "DataService";
-    private final static String DATA_JSON_URL = "http://api.ucbcomedy.com/dcm?mode=development";
+    private final static String DATA_JSON_URL = "http://api.ucbcomedy.com/dcm";
     private static final String SHARED_PREFERENCES_NAME = "DCM_SHARED_PREFERENCES";
     private static final String LATEST_ETAG_KEY = "LATEST_ETAG_KEY";
 
@@ -166,6 +166,7 @@ public class DataService {
                         protected void onPostExecute(String s) {
                             super.onPostExecute(s);
                             Log.d(TAG, "Schedule downloaded successfully");
+                            Toast.makeText(context, R.string.success_schedule_updated, Toast.LENGTH_LONG).show();
                             progressDialog.hide();
 
                             if (parentHandler != null) {
@@ -195,7 +196,7 @@ public class DataService {
                     Toast.makeText(context, R.string.success_msg_schedule_up_to_date, Toast.LENGTH_LONG).show();
                 } else {
                     Log.e(TAG, "Schedule failed to download", e);
-                    Toast.makeText(context, R.string.error_msg_schedule_download, Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, context.getText(R.string.error_msg_schedule_download) + ":" + e.toString(), Toast.LENGTH_LONG).show();
                 }
 
                 progressDialog.hide();

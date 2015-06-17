@@ -87,7 +87,7 @@ public class VenuesListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         try {
-            venues = DatabaseHelper.getSharedService().getVenueDAO().queryBuilder().orderBy("name",true).query();
+            venues = DatabaseHelper.getSharedService().getVenueDAO().queryBuilder().orderBy("name",false).query();
         } catch (SQLException e) {
             e.printStackTrace();
         }

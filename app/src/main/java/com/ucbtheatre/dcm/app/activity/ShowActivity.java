@@ -252,7 +252,8 @@ public class ShowActivity extends Activity {
     }
 
     public String getShareString(Show show) {
-        return String.format("Check out \"%s\" at #DCM17 http://www.delclosemarathon.com/calendar", show.name);
+        Performance perf = performances.get(0);
+        return String.format("Check out \"%s\" at %s, %s %s.  #DCM17 http://www.delclosemarathon.com/calendar", show.name, perf.venue.name, perf.getStartDay(), perf.getStartTime());
     }
 
     @Override
