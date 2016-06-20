@@ -193,9 +193,28 @@ public class ShowsListFragment extends Fragment {
                 convertView.setBackgroundColor(Color.TRANSPARENT);
             }
 
+            convertView.setBackgroundColor(getPrideColor(position));
 
 
             return convertView;
+        }
+
+        private int getPrideColor(int position) {
+            switch (position % 6){
+                case 0:
+                    return Color.parseColor("#FF0000");
+                case 1:
+                    return Color.parseColor("#FF8000");
+                case 2:
+                    return Color.parseColor("#FFFF00");
+                case 3:
+                    return Color.parseColor("#008000");
+                case 4:
+                    return Color.parseColor("#0000FF");
+                case 5:
+                    return Color.parseColor("#A000C0");
+            }
+            return android.R.color.white;
         }
 
         @Override
