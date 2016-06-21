@@ -1,5 +1,7 @@
 package com.ucbtheatre.dcm.app.activity;
 
+import com.crashlytics.android.answers.Answers;
+import io.fabric.sdk.android.Fabric;
 import java.util.List;
 import java.util.Locale;
 
@@ -67,6 +69,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         //Initialize the services
         DatabaseHelper.initialize(this);
         DataService.initialize(this);
+
+        Fabric.with(this, new Answers());
 
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();

@@ -1,7 +1,9 @@
 package com.ucbtheatre.dcm.app.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
@@ -18,12 +20,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.RatingEvent;
 import com.ucbtheatre.dcm.app.R;
 import com.ucbtheatre.dcm.app.data.DatabaseHelper;
 import com.ucbtheatre.dcm.app.data.Performance;
 import com.ucbtheatre.dcm.app.data.Performer;
 import com.ucbtheatre.dcm.app.data.Show;
 import com.ucbtheatre.dcm.app.data.Venue;
+import com.ucbtheatre.dcm.app.data.VoteResponse;
 import com.ucbtheatre.dcm.app.fragment.ShowFragment;
 import com.ucbtheatre.dcm.app.widget.RemoteImageView;
 
@@ -65,76 +70,44 @@ public class ShowActivity extends Activity {
         TextView blurb = (TextView) findViewById(R.id.fragment_show_blurb);
         blurb.setText(show.promo);
 
-//        final ImageButton favoriteButton = (ImageButton) findViewById(R.id.fragment_show_favorite_button);
-//        if(performances.iterator().next().getIsFavorite()){
-//            favoriteButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_favorite_selected));
-//        } else {
-//            favoriteButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_favorite_unselected));
-//        }
-//
-//        favoriteButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                boolean newFavoriteValue = !performances.iterator().next().getIsFavorite();
-//                show.setIsFavorite(newFavoriteValue);
-//
-//                if(newFavoriteValue) {
-//                    Toast.makeText(ShowActivity.this, getResources().getString(R.string.toast_favorite_added), Toast.LENGTH_SHORT).show();
-//                    favoriteButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_favorite_selected));
-//                } else {
-//                    Toast.makeText(ShowActivity.this, getResources().getString(R.string.toast_favorite_removed), Toast.LENGTH_SHORT).show();
-//                    favoriteButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_favorite_unselected));
-//                }
-//
-//            }
-//        });
-//
-//        ImageButton shareButton = (ImageButton) findViewById(R.id.fragment_show_share_button);
-//        shareButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                Intent shareIntent = new Intent(Intent.ACTION_SEND);
-//                shareIntent.putExtra(Intent.EXTRA_TEXT, getShareString(show));
-//                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Del Close Marathon 16"); //For a nice email
-//                shareIntent.setType("text/plain");
-//
-//                startActivity(Intent.createChooser(shareIntent, "Share"));
-//
-//                //TODO: image sharing isn't really working, so we're just disabling it.
-//                //But I thought it might be useful to still have here.
-////                if(show.image != null && !show.image.isEmpty()){
-////
-////                    File cachedFile = ImageLoader.getInstance().getDiscCache().get(show.image);
-////
-////                    //File imagePath = cachedFile; //new File(getActivity().getFilesDir(), "images");
-////                    //File newFile = new File(imagePath, "share_image.png");
-////                    Uri contentUri = FileProvider.getUriForFile(getActivity(), "com.ucbtheatre.dcm.android", cachedFile);
-////
-////                    Intent intent = new Intent();
-////                    intent.setAction(Intent.ACTION_SEND);
-////                    intent.setType("image/*");
-////
-////                    List<ResolveInfo> resInfoList = getActivity().getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-////                    for (ResolveInfo resolveInfo : resInfoList) {
-////                        String packageName = resolveInfo.activityInfo.packageName;
-////                        getActivity().grantUriPermission(packageName, contentUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-////                    }
-////
-////                    intent.putExtra(Intent.EXTRA_TEXT, getShareString(show));
-////                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-////                    intent.putExtra(Intent.EXTRA_STREAM, contentUri);
-////                    startActivity(Intent.createChooser(intent, "Share"));
-////
-////                } else {
-//                //}
-//            }
-//        });
-
         createImage(this.findViewById(android.R.id.content));
         createShowViews(this.findViewById(android.R.id.content));
         createCastViews(this.findViewById(android.R.id.content));
         createTicketViews(this.findViewById(android.R.id.content));
+
+        Button vote = (Button) findViewById(R.id.fragment_vote);
+        vote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Answers.getInstance().logRating(new RatingEvent()
+                .putContentId(Integer.toString(show.id))
+                .putContentName(show.name)
+                .putRating(10)
+                .putContentType("show"));
+
+
+                String randomMessage = "Your vote was counted";
+
+                try {
+                    List<VoteResponse> allJokes = DatabaseHelper.getSharedService().getVoteResponseDAO().queryForAll();
+                    randomMessage = allJokes.get((int) Math.floor(Math.random() * (double) allJokes.size())).message;
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(ShowActivity.this);
+                builder.setTitle("Thanks for voting!");
+                builder.setMessage(randomMessage);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //noop
+                    }
+                });
+                builder.create().show();
+            }
+        });
 
     }
 

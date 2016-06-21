@@ -128,6 +128,7 @@ public class DataService {
 
 
                                 JSONObject data = obj[0].getJSONObject("data");
+                                processVoteResponses(data.getJSONArray("Jokes"));
                                 publishProgress("First beats");
                                 processVenues(data.getJSONArray("Venues"));
                                 publishProgress("Second beats");
@@ -204,6 +205,14 @@ public class DataService {
             }
         });
 
+    }
+
+    private void processVoteResponses(JSONArray jokes) throws JSONException, SQLException {
+        for(int i = 0; i < jokes.length(); i++){
+            String message = jokes.getString(i);
+            VoteResponse vr = new VoteResponse(message);
+            Dao.CreateOrUpdateStatus status = DatabaseHelper.getSharedService().getVoteResponseDAO().createOrUpdate(vr);
+        }
     }
 
     protected void processSchedules(final JSONArray schedules) throws JSONException, SQLException {

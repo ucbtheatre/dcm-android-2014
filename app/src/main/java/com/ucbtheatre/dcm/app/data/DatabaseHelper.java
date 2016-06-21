@@ -20,7 +20,7 @@ import java.sql.SQLException;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = "dcm.db";
-    private static final int DATABASE_VERSION = 22;
+    private static final int DATABASE_VERSION = 23;
 
 
     //Static accessor
@@ -46,6 +46,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private Dao<Performance, Integer> performanceDAO;
     private Dao<Performer, Integer> performerDAO;
     private Dao<ShowPerformer, Integer> showPerformerDAO;
+    private Dao<VoteResponse, Integer> voteResponseDAO;
 
     //Constructor and creation
     public DatabaseHelper(Context context) {
@@ -62,6 +63,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Performance.class);
             TableUtils.createTable(connectionSource, Performer.class);
             TableUtils.createTable(connectionSource, ShowPerformer.class);
+            TableUtils.createTable(connectionSource, VoteResponse.class);
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
@@ -81,6 +83,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, Show.class, true);
             TableUtils.dropTable(connectionSource, Performance.class, true);
             TableUtils.dropTable(connectionSource, Performer.class, true);
+            TableUtils.dropTable(connectionSource, VoteResponse.class, true);
 
             // after we drop the old databases, we create the new ones
             onCreate(null, connectionSource);
@@ -142,6 +145,18 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             }
         }
         return showPerformerDAO;
+    }
+
+    public Dao<VoteResponse, Integer> getVoteResponseDAO() {
+
+        if (voteResponseDAO == null) {
+            try {
+                voteResponseDAO = getDao(VoteResponse.class);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return voteResponseDAO;
     }
 
     @Override

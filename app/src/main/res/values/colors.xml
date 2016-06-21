@@ -5,4 +5,5 @@
     <color name="light_gray">#cccccc</color>
     <color name="favorite_background">#80d65c5c</color>
     <color name="theatre_cleaning_background">#AAAAAA</color>
+    <color name="dcm_blue">#3266B0</color>
 </resources>
