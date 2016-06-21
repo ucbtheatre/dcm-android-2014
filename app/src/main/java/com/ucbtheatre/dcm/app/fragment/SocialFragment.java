@@ -56,36 +56,27 @@ public class SocialFragment extends android.support.v4.app.Fragment {
         SocialLink twitter = new SocialLink(
                 Color.argb(255, 85, 172, 238),
                 "Twitter",
-                "@UCBTheatreNY",
+                "@UCBTNY",
                 "twitter://user?user_id=40349753",
-                "http://twitter.com/UCBTheatreNY");
+                "http://twitter.com/UCBTNY");
         socialLinkList.add(twitter);
 
         SocialLink instagram = new SocialLink(
                 Color.argb(255, 157, 105, 86),
                 "Instagram",
-                "@UCBTheatreNY",
-                "http://instagram.com/_u/UCBTheatreNY",
-                "http://instagram.com/UCBTheatreNY");
+                "@UCBTNY",
+                "http://instagram.com/_u/UCBTNY",
+                "http://instagram.com/UCBTNY");
         socialLinkList.add(instagram);
 
         SocialLink facebook = new SocialLink(
                 Color.argb(255, 58, 87, 149),
                 "Facebook",
-                "/UCBTheatreNY",
+                "/UCBTNY",
         //TODO
                 "instafooHACK://",
-                "http://facebook.com/UCBTheatreNY");
+                "http://facebook.com/UCBTNY");
         socialLinkList.add(facebook);
-
-        SocialLink tumblr = new SocialLink(
-                Color.argb(255, 54, 70, 93),
-                "Tumblr",
-                "@ucbcomedy",
-                //HACL it appears tumblr doesn't support this on android
-                "hackhackhack://",
-                "http://ucbcomedy.tumblr.com");
-        socialLinkList.add(tumblr);
 
         SocialLink snapchat = new SocialLink(
                 Color.argb(255, 255, 252, 0),

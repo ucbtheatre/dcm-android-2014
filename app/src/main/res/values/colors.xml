@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="header_background">#d65c5c</color>
+    <color name="header_background">#d04040</color>
     <color name="header_text">#ffffff</color>
     <color name="light_gray">#cccccc</color>
     <color name="favorite_background">#80d65c5c</color>
