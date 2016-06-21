@@ -253,7 +253,7 @@ public class ShowActivity extends Activity {
 
     public String getShareString(Show show) {
         Performance perf = performances.get(0);
-        return String.format("Check out \"%s\" at %s, %s %s.  #DCM17 http://www.delclosemarathon.com/calendar", show.name, perf.venue.name, perf.getStartDay(), perf.getStartTime());
+        return String.format("Check out \"%s\" at %s, %s %s.  #DCM18 http://www.delclosemarathon.com/calendar", show.name, perf.venue.name, perf.getStartDay(), perf.getStartTime());
     }
 
     @Override
@@ -288,7 +288,7 @@ public class ShowActivity extends Activity {
         } else {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.putExtra(Intent.EXTRA_TEXT, getShareString(show));
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Del Close Marathon 17"); //For a nice email
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Del Close Marathon 18"); //For a nice email
             shareIntent.setType("text/plain");
 
             startActivity(Intent.createChooser(shareIntent, "Share"));

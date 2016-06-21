@@ -193,7 +193,7 @@ public class ShowsListFragment extends Fragment {
                 convertView.setBackgroundColor(Color.TRANSPARENT);
             }
 
-            convertView.setBackgroundColor(getPrideColor(position));
+            //convertView.setBackgroundColor(getPrideColor(position));
 
 
             return convertView;

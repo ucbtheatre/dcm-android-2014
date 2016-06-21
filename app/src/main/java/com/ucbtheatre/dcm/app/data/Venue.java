@@ -58,6 +58,6 @@ public class Venue implements Serializable {
 
     @Override
     public String toString() {
-        return name;
+        return short_name;
     }
 }

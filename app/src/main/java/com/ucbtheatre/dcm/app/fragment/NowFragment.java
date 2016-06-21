@@ -258,7 +258,7 @@ public class NowFragment extends Fragment {
             TextView title = (TextView) convertView.findViewById(R.id.header_text);
 
             Performance performance = getItem(position);
-            title.setText(performance.venue.name);
+            title.setText(performance.venue.short_name);
 
             return convertView;
         }
@@ -266,7 +266,7 @@ public class NowFragment extends Fragment {
         @Override
         public long getHeaderId(int position) {
             Performance performance = getItem(position);
-            int venue_id = performance.venue.name.hashCode();
+            int venue_id = performance.venue.short_name.hashCode();
             return venue_id;
         }
     }

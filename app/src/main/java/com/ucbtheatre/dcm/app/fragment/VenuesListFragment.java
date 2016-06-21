@@ -87,7 +87,7 @@ public class VenuesListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         try {
-            venues = DatabaseHelper.getSharedService().getVenueDAO().queryBuilder().orderBy("name",false).query();
+            venues = DatabaseHelper.getSharedService().getVenueDAO().queryBuilder().orderBy("short_name",false).query();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -151,7 +151,7 @@ public class VenuesListFragment extends Fragment {
         for(Venue v : venues){
             mapView.getMap().addMarker(new MarkerOptions()
                     .position(new LatLng(v.lat, v.lng))
-                    .title(v.name)
+                    .title(v.short_name)
                     .snippet(v.address));
         }
 
@@ -166,8 +166,8 @@ public class VenuesListFragment extends Fragment {
                     if(other != venue && other.lat == venue.lat && other.lng == venue.lng){
                         //Found a double
                         String [] options = new String[2];
-                        options[0] = venue.name;
-                        options[1] = other.name;
+                        options[0] = venue.short_name;
+                        options[1] = other.short_name;
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -205,7 +205,7 @@ public class VenuesListFragment extends Fragment {
 
     private Venue getVenueFromMarker(Marker marker){
         for(Venue v : venues){
-            if(v.name.equalsIgnoreCase(marker.getTitle())){
+            if(v.short_name.equalsIgnoreCase(marker.getTitle())){
                 return v;
             }
         }

@@ -7,7 +7,7 @@
     <string name="title_section_venues">Venues</string>
     <string name="title_section_favorites">Faves</string>
     <string name="action_settings">Settings</string>
-    <string name="title_main_activity">DCM 17</string>
+    <string name="title_main_activity">DCM 18</string>
 
     <!-- Menus -->
     <string name="menu_main_refresh">Refresh Schedule</string>
@@ -28,7 +28,7 @@
     <string name="title_search_section_shows">Shows</string>
     <string name="toast_favorite_added">Favorite Added</string>
     <string name="toast_favorite_removed">Favorite Removed</string>
-    <string name="credit_names">With help from:\n*Cody Snider\n*Andy Nagel</string>
+    <string name="credit_names">With help from:\n*Andy Nagel\n*Julien Darmoni</string>
     <string name="title_activity_show">Show</string>
     <string name="menu_map">map</string>
     <string name="title_activity_venue">Venue</string>

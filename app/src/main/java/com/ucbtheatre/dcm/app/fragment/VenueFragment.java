@@ -120,7 +120,7 @@ public class VenueFragment extends Fragment implements Serializable {
 
 
         title = (TextView) getView().findViewById(R.id.fragment_venue_title);
-        title.setText(venue.name);
+        title.setText(venue.short_name);
 
         TextView address = (TextView) getView().findViewById(R.id.fragment_venue_address);
         address.setText(venue.address);
