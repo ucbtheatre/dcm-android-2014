@@ -36,6 +36,7 @@ import com.ucbtheatre.dcm.app.data.Venue;
 
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -159,32 +160,32 @@ public class VenuesListFragment extends Fragment {
         mapView.getMap().setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-
                 //else check if it's a dupe
                 final Venue venue = getVenueFromMarker(marker);
+
+                List<String> matchingLabels = new ArrayList<String>();
+                final List<Venue> matchingVenues = new ArrayList<Venue>();
                 for(final Venue other : venues){
-                    if(other != venue && other.lat == venue.lat && other.lng == venue.lng){
-                        //Found a double
-                        String [] options = new String[2];
-                        options[0] = venue.short_name;
-                        options[1] = other.short_name;
+                    if(other.lat == venue.lat && other.lng == venue.lng){
+                        //Found a match
+                        matchingLabels.add(other.short_name);
+                        matchingVenues.add(other);
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setItems(options, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (which == 0) {
-                                    showVenue(venue);
-                                } else {
-                                    showVenue(other);
-                                }
-                            }
-                        });
-                        builder.create().show();
-
-                        return true;
                     }
                 }
-                return false;
+
+                if(matchingVenues.size() > 1){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setItems(matchingLabels.toArray(new String[matchingLabels.size()]), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            showVenue(matchingVenues.get(which));
+                        }
+                    });
+                    builder.create().show();
+                    return true;
+                } else {
+                    return false;
+                }
             }
         });
 
