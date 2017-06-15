@@ -67,7 +67,7 @@
                 android:background="@drawable/custom_button"
                 android:textColor="@android:color/white"
                 android:padding="2dp"
-                android:text="Vote this show your favorite of DCM"/>
+                android:text="Give this show points towards a High Score!"/>
             <LinearLayout
                 android:id="@+id/fragment_show_times"
                 android:layout_width="match_parent"
