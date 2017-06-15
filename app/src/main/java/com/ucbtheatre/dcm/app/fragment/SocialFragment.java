@@ -84,7 +84,7 @@ public class SocialFragment extends android.support.v4.app.Fragment {
                 "@ucbcomedy",
                 //TODO
                 "com.snapchat.android",
-                "http://www.snapchat.com/");
+                "http://www.snapchat.com/add/ucbcomedy");
         snapchat.textColor = Color.BLACK;
         socialLinkList.add(snapchat);
     }
