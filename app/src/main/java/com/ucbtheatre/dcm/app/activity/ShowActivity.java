@@ -97,7 +97,7 @@ public class ShowActivity extends Activity {
 
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(ShowActivity.this);
-                builder.setTitle("Thanks for voting!");
+                builder.setTitle("They got points!");
                 builder.setMessage(randomMessage);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
