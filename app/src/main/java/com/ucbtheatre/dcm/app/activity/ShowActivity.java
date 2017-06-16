@@ -36,7 +36,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import static com.ucbtheatre.dcm.app.fragment.NowFragment.MARATHON_START_DATE;
 
 public class ShowActivity extends Activity {
 
@@ -86,7 +89,7 @@ public class ShowActivity extends Activity {
                 .putContentType("show"));
 
 
-                String randomMessage = "Your vote was counted";
+                String randomMessage = "";
 
                 try {
                     List<VoteResponse> allJokes = DatabaseHelper.getSharedService().getVoteResponseDAO().queryForAll();
@@ -109,6 +112,9 @@ public class ShowActivity extends Activity {
             }
         });
 
+        if(new Date().before(MARATHON_START_DATE)){
+            vote.setVisibility(View.GONE);
+        }
     }
 
     protected void createShowViews(View view) {
