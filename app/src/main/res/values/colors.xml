@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="header_background">#90c8bf</color>
+    <color name="header_background">#333334</color>
     <color name="header_text">#ffffff</color>
     <color name="light_gray">#cccccc</color>
     <color name="favorite_background">#80d65c5c</color>
     <color name="theatre_cleaning_background">#90c8bf</color>
 
-    <drawable name="tabBackground">#ed4b56</drawable>
+    <drawable name="tabBackground">#990000</drawable>
 </resources>
