@@ -148,7 +148,7 @@ public class VenuesListFragment extends Fragment {
 
 
         mapView.onCreate(savedInstanceState);
-        mapView.getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(40.737417, -73.988833), 14));
+        mapView.getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(40.737417, -73.988833), 13));
         for(Venue v : venues){
             mapView.getMap().addMarker(new MarkerOptions()
                     .position(new LatLng(v.lat, v.lng))
