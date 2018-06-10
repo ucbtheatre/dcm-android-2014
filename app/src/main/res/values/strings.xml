@@ -7,7 +7,7 @@
     <string name="title_section_venues">Venues</string>
     <string name="title_section_favorites">Faves</string>
     <string name="action_settings">Settings</string>
-    <string name="title_main_activity">DCM 19</string>
+    <string name="title_main_activity">DCM 20</string>
 
     <!-- Menus -->
     <string name="menu_main_refresh">Refresh Schedule</string>

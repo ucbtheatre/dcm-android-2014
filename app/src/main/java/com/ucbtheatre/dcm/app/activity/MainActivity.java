@@ -194,7 +194,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 getResources().getString(R.string.title_section_shows),
                 getResources().getString(R.string.title_section_venues),
                 getResources().getString(R.string.title_section_favorites),
-                "#DCM19"
+                "#DCM20"
         };
 
         public SectionsPagerAdapter(FragmentManager fm) {
