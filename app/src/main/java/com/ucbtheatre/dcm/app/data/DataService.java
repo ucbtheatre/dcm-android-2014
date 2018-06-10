@@ -30,7 +30,7 @@ import java.util.concurrent.Callable;
 public class DataService {
 
     private final static String TAG = "DataService";
-    private final static String DATA_JSON_URL = "http://api.ucbcomedy.com/dcm19";
+    private final static String DATA_JSON_URL = "http://api.ucbcomedy.com/dcm20hkezldho92";
     private static final String SHARED_PREFERENCES_NAME = "DCM_SHARED_PREFERENCES";
     private static final String LATEST_ETAG_KEY = "LATEST_ETAG_KEY";
 
