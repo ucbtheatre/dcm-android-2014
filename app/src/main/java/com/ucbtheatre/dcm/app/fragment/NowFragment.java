@@ -39,10 +39,10 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
  */
 public class NowFragment extends Fragment {
 
-    //June 27, 2014, 4 PM EST, pulled from http://www.unixtimestamp.com/ and then EST corrected
-    public static final Date MARATHON_START_DATE = new Date(((long)1498233600 + 4*60*60) * 1000);
-    //June 29, 2014, 11:30 PM EST, pulled from http://www.unixtimestamp.com/
-    public static final Date MARATHON_END_DATE = new Date(((long)1498433400 + 4*60*60) * 1000);
+    //June 29, 2018, 4 PM EST, pulled from http://www.unixtimestamp.com/ and then EST corrected
+    public static final Date MARATHON_START_DATE = new Date(((long)1530288000 + 4*60*60) * 1000);
+    //July 1, 2018, 11:30 PM EST, pulled from http://www.unixtimestamp.com/
+    public static final Date MARATHON_END_DATE = new Date(((long)1530487800 + 4*60*60) * 1000);
 
     private Handler clock;
     private Runnable updateClockRunnable = new Runnable() {
