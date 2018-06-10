@@ -111,6 +111,8 @@ public class Show implements Serializable {
             return performances.get(0).getIsFavorite();
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
         }
         return false;
     }
