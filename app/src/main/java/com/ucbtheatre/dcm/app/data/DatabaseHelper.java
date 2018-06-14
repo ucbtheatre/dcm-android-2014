@@ -19,7 +19,7 @@ import java.sql.SQLException;
  */
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
-    private static final String DATABASE_NAME = "dcm.db";
+    private static final String DATABASE_NAME = "dcm20.db";
     private static final int DATABASE_VERSION = 23;
 
 
