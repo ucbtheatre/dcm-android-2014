@@ -25,7 +25,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAL3pIWVlZsUlGuvd27qJ81NWxIyOvsB90" />
-
+.
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.ucbtheatre.dcm.android"
@@ -49,9 +49,7 @@
             android:name=".activity.AboutActivity"
             android:label="@string/title_activity_about"
             android:parentActivityName=".activity.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="MainActivity" />
+
         </activity>
         <activity
             android:name=".activity.SearchActivity"

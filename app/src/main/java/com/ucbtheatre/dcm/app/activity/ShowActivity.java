@@ -77,6 +77,38 @@ public class ShowActivity extends Activity {
         createShowViews(this.findViewById(android.R.id.content));
         createCastViews(this.findViewById(android.R.id.content));
         createTicketViews(this.findViewById(android.R.id.content));
+
+        Button vote = (Button) findViewById(R.id.fragment_vote);
+        vote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String randomMessage = "";
+
+                try {
+                    List<VoteResponse> allJokes = DatabaseHelper.getSharedService().getVoteResponseDAO().queryForAll();
+                    randomMessage = allJokes.get((int) Math.floor(Math.random() * (double) allJokes.size())).message;
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(ShowActivity.this);
+                builder.setTitle("Fun Fact:");
+                builder.setMessage(randomMessage);
+//                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        //noop
+//                    }
+//                });
+                builder.create().show();
+            }
+        });
+
+//        if(new Date().before(MARATHON_START_DATE)){
+//            vote.setVisibility(View.GONE);
+//        }
     }
 
     protected void createShowViews(View view) {

@@ -60,6 +60,14 @@
                 android:textSize="18dp"
                 android:paddingBottom="10dp"
                 />
+            <Button
+                android:id="@+id/fragment_vote"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/custom_button"
+                android:textColor="@android:color/white"
+                android:padding="2dp"
+                android:text="Press me for a DCM Fun Fact"/>
             <LinearLayout
                 android:id="@+id/fragment_show_times"
                 android:layout_width="match_parent"
