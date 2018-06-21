@@ -36,7 +36,10 @@ import com.ucbtheatre.dcm.app.fragment.NowFragment;
 import com.ucbtheatre.dcm.app.fragment.ShowFragment;
 import com.ucbtheatre.dcm.app.fragment.ShowsListFragment;
 import com.ucbtheatre.dcm.app.fragment.SocialFragment;
+import com.ucbtheatre.dcm.app.fragment.VenueFragment;
 import com.ucbtheatre.dcm.app.fragment.VenuesListFragment;
+import com.ucbtheatre.dcm.app.fragment.OffersFragment;
+
 
 import org.json.JSONObject;
 
@@ -194,7 +197,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 getResources().getString(R.string.title_section_shows),
                 getResources().getString(R.string.title_section_venues),
                 getResources().getString(R.string.title_section_favorites),
-                "#DCM20"
+                "#DCM20",
+                "Offers"
         };
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -219,6 +223,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 case 4: {
                     return new SocialFragment();
                 }
+                case 5: {
+                    return new OffersFragment();
+                }
+
             }
             return null;
         }

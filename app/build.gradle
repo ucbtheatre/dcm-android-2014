@@ -53,6 +53,8 @@ android {
 }
 
 dependencies {
+    implementation 'com.android.support:support-v13:21.0.3'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     compile 'com.google.android.gms:play-services-maps:7.5.0'
     compile 'com.android.support:appcompat-v7:19.1.+'
     compile 'com.android.support:support-v4:19.+'
@@ -85,4 +87,3 @@ tasks.whenTaskAdded { task ->
         task.dependsOn 'increaseVersionCode'
     }
 }
-

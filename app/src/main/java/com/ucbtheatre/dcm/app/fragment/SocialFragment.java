@@ -78,15 +78,15 @@ public class SocialFragment extends android.support.v4.app.Fragment {
                 "http://facebook.com/UCBTNY");
         socialLinkList.add(facebook);
 
-        SocialLink snapchat = new SocialLink(
-                Color.argb(255, 255, 252, 0),
-                "Snapchat",
-                "@ucbcomedy",
-                //TODO
-                "com.snapchat.android",
-                "http://www.snapchat.com/add/ucbcomedy");
-        snapchat.textColor = Color.BLACK;
-        socialLinkList.add(snapchat);
+//        SocialLink snapchat = new SocialLink(
+//                Color.argb(255, 255, 252, 0),
+//                "Snapchat",
+//                "@ucbcomedy",
+//                //TODO
+//                "com.snapchat.android",
+//                "http://www.snapchat.com/add/ucbcomedy");
+//        snapchat.textColor = Color.BLACK;
+//        socialLinkList.add(snapchat);
     }
 
     @Override
